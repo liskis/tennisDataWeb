@@ -1,0 +1,20 @@
+# .github/workflows/firebase-hosting-main-merge.yml
+
+name: Deploy to Firebase Hosting on merge
+'on':
+  push:
+    branches:
+      - main # mainブランチへのpushをトリガーにする
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '' # ← 空にする
+          token: '${{ secrets.FIREBASE_TOKEN }}' # ← 新しく追加
+          projectId: tennisdata-4ec3f # ← ★正しいプロジェクトIDに変更
+          channelId: live # ← 本番環境(live)にデプロイすることを明示

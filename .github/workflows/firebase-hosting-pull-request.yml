@@ -1,0 +1,18 @@
+# .github/workflows/firebase-hosting-pull-request.yml
+
+name: Deploy to Firebase Hosting on PR
+'on': pull_request
+
+jobs:
+  build_and_preview:
+    if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '' # ← 空にする
+          token: '${{ secrets.FIREBASE_TOKEN }}' # ← 新しく追加
+          projectId: tennisdata-4ec3f # ← ★正しいプロジェクトIDに変更
+          expires: 30d # プレビュー環境を30日間保持する

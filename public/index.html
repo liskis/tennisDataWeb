@@ -1,15 +1,107 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>テニス試合データ</title>
-  </head>
-  <body>
-    <h1>Firebaseから取得したデータ</h1>
-    <ul id="data-list"></ul>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>テニス試合分析</title>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="loading-indicator">試合データを読み込み中...</div>
 
-    <!-- 自分のJSファイルをモジュールとして読み込むこの一行だけでOK -->
-    <script type="module" src="tennisDataWeb.js"></script>
-  </body>
+  <div id="app-container" style="display: none;">
+    
+    <header id="score-area">
+      <div id="match-info">
+        <p id="match-date"></p>
+        <p id="match-type"></p>
+      </div>
+      <div id="player-names">
+        <!-- JSでプレイヤー名が挿入されます -->
+      </div>
+      <div id="set-scores">
+        <!-- JSでセットスコアボタンが挿入されます -->
+      </div>
+    </header>
+
+    <nav id="tab-navigation">
+      <button class="tab-button active" data-tab="basic-data">試合データ</button>
+      <button class="tab-button" data-tab="advance-data">アドバンスデータ</button>
+      <button class="tab-button" data-tab="point-history">ポイント履歴</button>
+    </nav>
+
+    <main id="tab-content">
+      
+      <div id="basic-data" class="tab-panel active">
+        <section class="analysis-section">
+          <header class="section-header"><h3>ファーストサーブ確率</h3></header>
+          <div class="bar-chart-group" id="first-serve-group"></div>
+        </section>
+        <section class="analysis-section">
+          <header class="section-header"><h3>セカンドサーブ確率</h3></header>
+          <div class="bar-chart-group" id="second-serve-group"></div>
+        </section>
+        <section class="analysis-section">
+          <header class="section-header"><h3>ダブルフォルト率</h3></header>
+          <div class="bar-chart-group" id="double-fault-group"></div>
+        </section>
+        <section class="analysis-section">
+          <header class="section-header"><h3>ファーストサーブ時のポイント獲得率</h3></header>
+          <div class="bar-chart-group" id="at-first-sv-group"></div>
+        </section>
+        <section class="analysis-section">
+          <header class="section-header"><h3>セカンドサーブ時のポイント獲得率</h3></header>
+          <div class="bar-chart-group" id="at-second-sv-group"></div>
+        </section>
+        <section class="analysis-section">
+          <header class="section-header"><h3>ファーストリターン時のポイント獲得率</h3></header>
+          <div class="bar-chart-group" id="at-first-return-group"></div>
+        </section>
+        <section class="analysis-section">
+          <header class="section-header"><h3>セカンドリターン時のポイント獲得率</h3></header>
+          <div class="bar-chart-group" id="at-second-return-group"></div>
+        </section>
+        <section class="analysis-section">
+          <header class="section-header"><h3>ゲーム取得率</h3></header>
+          <div class="bar-chart-group" id="game-rate-group"></div>
+        </section>
+        
+        <div class="grid-container">
+          <section class="analysis-section chart-box"><div id="get_lost_point_chart"></div></section>
+          <section class="analysis-section chart-box"><div id="point_rate_sv_rtn_chart"></div></section>
+          <section class="analysis-section chart-box"><div id="point_rate_service_side_chart"></div></section>
+          <section class="analysis-section chart-box"><div id="point_rate_return_side_chart"></div></section>
+          <section class="analysis-section chart-box"><div id="get_lost_game_chart"></div></section>
+          <section class="analysis-section chart-box"><div id="break_service_down_chart"></div></section>
+        </div>
+      </div>
+
+      <div id="advance-data" class="tab-panel">
+        <section class="analysis-section">
+          <header class="section-header"><h3>ウィニングレート（ウィナー / ( ウィナー + ミス ))</h3></header>
+          <div class="bar-chart-group" id="winning-rate-group"></div>
+        </section>
+        <div class="grid-container">
+          <section class="analysis-section chart-box"><div id="get_point_breakdown_chart"></div></section>
+          <section class="analysis-section chart-box"><div id="lost_point_breakdown_chart"></div></section>
+          <section class="analysis-section chart-box"><div id="winner_point_breakdown_chart"></div></section>
+          <section class="analysis-section chart-box"><div id="miss_point_breakdown_chart"></div></section>
+        </div>
+      </div>
+
+      <div id="point-history" class="tab-panel">
+        <h2>全ポイント履歴</h2>
+        <table id="point-history-table">
+          <thead>
+            <tr><th>サーバー</th><th>スコア</th><th>サーブ</th><th>結果</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+  
+  <script type="module" src="main.js"></script>
+</body>
 </html>

@@ -12,7 +12,7 @@ const db = admin.firestore();
 
 async function exportAllCollections() {
   const collectionsToCopy = [
-    'matchData', 'setData', 'gameData', 'pointData', 'geminiData'
+    'matchData', 'setData', 'gameData', 'pointData', 'geminiData', 'userData'
   ];
   const backupData = {};
 

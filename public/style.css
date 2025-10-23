@@ -1,4 +1,3 @@
-/* style.css */
 :root {
   --primary-color: #007bff;
   --secondary-color: #6c757d;
@@ -56,6 +55,39 @@ header#score-area {
 #match-info p {
     margin: 0;
 }
+
+/* ▼▼▼ ここからが今回の修正箇所です ▼▼▼ */
+#player-names {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 0 10px 0;
+  font-size: 1.2em;
+}
+
+.team-names {
+  flex: 1;
+}
+
+.team-names.my-team {
+  text-align: left;
+}
+
+.team-names.opponent-team {
+  text-align: right;
+}
+
+.team-names span {
+  font-weight: 600;
+}
+
+.vs-divider {
+  margin: 0 20px;
+  color: var(--subtle-text-color);
+  font-size: 0.9em;
+}
+/* ▲▲▲ 選手名表示スタイルの修正ここまで ▲▲▲ */
+
 
 #set-scores {
   display: flex;
@@ -220,97 +252,7 @@ nav#tab-navigation {
   height: 100%;
 }
 
-#point-history-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  background-color: var(--surface-color);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-  font-size: 0.9em;
-}
-
-#point-history-table th, #point-history-table td {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: left;
-}
-
-#point-history-table th {
-  background-color: #f7f7f7;
-  font-weight: 600;
-}
-
-#point-history-table tr:nth-child(even) {
-  background-color: #fafafa;
-}
-
-/* --- Point History Enhancements --- */
-
-.set-header {
-  background-color: #e9ecef;
-  padding: 10px 15px;
-  margin-top: 25px;
-  border-radius: 6px;
-  border-bottom: 2px solid var(--primary-color);
-}
-
-.set-header h3 {
-  margin: 0;
-  font-size: 1.3em;
-  color: #333;
-}
-
-.game-header {
-  padding: 8px 15px;
-  margin-top: 15px;
-  background-color: #f8f9fa;
-  border-left: 4px solid var(--secondary-color);
-}
-
-.game-header h4 {
-  margin: 0;
-  font-weight: 600;
-  color: var(--subtle-text-color);
-}
-
-.game-result {
-  font-weight: normal;
-  font-size: 0.9em;
-  color: var(--primary-color);
-}
-
-#point-history-table {
-  /* 既存のスタイルを上書き/調整 */
-  margin-top: 0; /* game-headerとのマージンに任せる */
-  box-shadow: none; /* 影をなくしてスッキリさせる */
-  margin-bottom: 20px; /* ゲーム間のスペース */
-}
-
-#point-history-table th:first-child,
-#point-history-table td:first-child {
-  width: 30px; /* インジケーター列の幅 */
-  text-align: center;
-  padding: 8px 5px;
-}
-
-.win-indicator,
-.loss-indicator {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-
-.win-indicator {
-  background-color: var(--success-color);
-}
-
-.loss-indicator {
-  background-color: var(--danger-color);
-}
-
 /* --- Point History Enhancements (v2) --- */
-
 .set-header {
   background-color: #e9ecef;
   padding: 10px 15px;
@@ -405,4 +347,158 @@ nav#tab-navigation {
 .point-lost {
   color: var(--danger-color);
   font-weight: bold;
+}
+
+
+/* --- Custom Pie Chart Legend (v4 - Semi-Circle Overlay) --- */
+.chart-box {
+  position: relative; 
+  min-height: 350px;
+}
+
+.chart-box > div:first-child {
+  height: 100%;
+}
+
+.custom-legend-wrapper {
+  position: absolute;
+  top: 55%; 
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 300px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.legend-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px 0;
+  display: flex; 
+  justify-content: center;
+  gap: 15px; 
+  flex-wrap: wrap; 
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  font-size: 0.9em;
+}
+
+.legend-item .legend-marker {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 5px; 
+  flex-shrink: 0;
+}
+
+.legend-item .legend-label {
+  color: var(--text-color);
+  margin-right: 5px; 
+}
+
+.legend-item .legend-value {
+  font-weight: 600;
+  color: var(--subtle-text-color);
+}
+
+.legend-description {
+  font-size: 0.8em;
+  color: var(--subtle-text-color);
+  line-height: 1.4;
+  margin: 0;
+  text-align: center;
+}
+
+
+/* --- Responsive Design for Mobile --- */
+@media screen and (max-width: 600px) {
+
+  /* 棒グラフのラベル部分の幅を狭くする */
+  .bar-chart-group .label {
+    width: 120px;
+    font-size: 0.85em;
+  }
+
+  /* 全体的な文字サイズと余白の調整 */
+  body {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .tab-button {
+    padding: 12px 15px;
+    font-size: 0.9em;
+  }
+
+  .analysis-section {
+    padding: 15px;
+  }
+
+  .section-header h3 {
+    font-size: 1.1em;
+  }
+
+  .grid-container {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .chart-box {
+    min-height: 320px;
+  }
+  
+  .custom-legend-wrapper {
+      top: 52%;
+  }
+  
+  .legend-list {
+    gap: 10px; 
+  }
+
+  .legend-item {
+    font-size: 0.85em;
+  }
+
+  .legend-description {
+    font-size: 0.75em;
+  }
+  
+  #point-history-table {
+    font-size: 0.85em; 
+    word-break: normal;
+    overflow-wrap: break-word; 
+  }
+  
+  #point-history-table th,
+  #point-history-table td {
+    padding: 9px 5px;
+  }
+
+  #point-history-table th {
+    white-space: nowrap; 
+  }
+
+  /* スマホ用の列幅を再定義 */
+  #point-history-table th:nth-child(1), /* ポジション */
+  #point-history-table td:nth-child(1) { width: 18%; }
+
+  #point-history-table th:nth-child(2), /* ポイント */
+  #point-history-table td:nth-child(2) { width: 16%; }
+
+  #point-history-table th:nth-child(3), /* Get/Lost */
+  #point-history-table td:nth-child(3) { width: 12%; }
+
+  #point-history-table th:nth-child(4), /* サービス */
+  #point-history-table td:nth-child(4) { width: 12%; }
+
+  #point-history-table th:nth-child(5), /* ショット */
+  #point-history-table td:nth-child(5) { width: 10%; }
+
+  #point-history-table th:nth-child(6), /* 誰が */
+  #point-history-table td:nth-child(6) { width: 32%; }
+  
 }

@@ -1,5 +1,5 @@
 import { ALL_DATA, SELECTED_SET, normalizeTimestamp } from '../main.js';
-import { translate } from './utils.js';
+import { translate } from '../i18n.js';
 
 function calculateInGameScoresAfterPoint(points, isTieBreak) {
     let myScore = 0;
@@ -21,7 +21,7 @@ function calculateInGameScoresAfterPoint(points, isTieBreak) {
         }
         const score1 = scoreMap[s1] || '40';
         const score2 = scoreMap[s2] || '40';
-        return servOrRet === 'serviceGame' ? `${score1}-${score2}` : `${score2}-${score1}`;
+        return servOrRet === 'serviceGame' ? `${score1}-${score2}` : `${score2}-${s1}`;
     };
 
     return points.map(point => {
@@ -37,13 +37,13 @@ function getWhoseText(point) {
     const winner = point.whichPoint;
 
     if (winner === 'myTeam') {
-        if (whose === 'me') return '自分が決めた';
-        if (whose === 'partner') return '味方が決めた';
-        if (['playerA', 'playerB', 'opponent'].includes(whose)) return '相手がミス';
-    } else { // winner === 'opponent'
-        if (whose === 'me') return '自分がミス';
-        if (whose === 'partner') return '味方がミス';
-        if (['playerA', 'playerB', 'opponent'].includes(whose)) return '相手が決めた';
+        if (whose === 'me') return translate('pie_my_winner');
+        if (whose === 'partner') return translate('pie_partner_winner');
+        if (['playerA', 'playerB', 'opponent'].includes(whose)) return translate('pie_opponent_miss');
+    } else {
+        if (whose === 'me') return translate('pie_my_miss');
+        if (whose === 'partner') return translate('pie_partner_miss');
+        if (['playerA', 'playerB', 'opponent'].includes(whose)) return translate('pie_opponent_winner');
     }
     return '-';
 }
@@ -52,7 +52,7 @@ export function renderPointHistory() {
     const container = document.getElementById('point-history');
     if (!container) return;
 
-    container.innerHTML = '<h2>全ポイント履歴</h2><div id="history-container"></div>';
+    container.innerHTML = `<h2 data-i18n-key="point_history_title">${translate('point_history_title')}</h2><div id="history-container"></div>`;
     const historyContainer = document.getElementById('history-container');
 
     const allSets = ALL_DATA.setData || [];
@@ -63,7 +63,7 @@ export function renderPointHistory() {
     const setsToRender = (SELECTED_SET === 0 ? sortedAllSets : [sortedAllSets[SELECTED_SET - 1]]).filter(Boolean);
 
     if (setsToRender.length === 0) {
-        historyContainer.innerHTML = '<p>表示するデータがありません。</p>';
+        historyContainer.innerHTML = `<p>${translate('no_data_to_display')}</p>`;
         return;
     }
 
@@ -80,32 +80,38 @@ export function renderPointHistory() {
 
     const sortedGames = gamesToRender.sort((a, b) => normalizeTimestamp(a.gameStartDate) - normalizeTimestamp(b.gameStartDate));
     
-    setsToRender.forEach((set, setIndex) => {
+    setsToRender.forEach((set) => {
         const setHeader = document.createElement('div');
         setHeader.className = 'set-header';
         const setNumber = sortedAllSets.findIndex(s => s.setId === set.setId) + 1;
-        setHeader.innerHTML = `<h3>第${setNumber}セット (${set.getGameCount} - ${set.lostGameCount})</h3>`;
+        setHeader.innerHTML = `<h3>${translate('set_x', {number: setNumber})} (${set.getGameCount} - ${set.lostGameCount})</h3>`;
         historyContainer.appendChild(setHeader);
 
         const gamesInSet = sortedGames.filter(g => g.setId === set.setId);
 
         gamesInSet.forEach((game, gameIndex) => {
-            const gameType = game.isTieBreak ? 'タイブレーク' : (game.servOrRet === 'serviceGame' ? 'サービスゲーム' : 'リターンゲーム');
-            const server = game.server;
-            const result = game.getPoint > game.lostPoint
-                ? (game.servOrRet === 'serviceGame' ? 'キープ' : 'ブレーク')
-                : (game.servOrRet === 'serviceGame' ? 'サービスダウン' : 'キープされました');
+            const gameTypeKey = game.isTieBreak ? 'ph_tie_break' : (game.servOrRet === 'serviceGame' ? 'label_service_game' : 'label_return_game');
+            const resultKey = game.getPoint > game.lostPoint
+                ? (game.servOrRet === 'serviceGame' ? 'ph_keep' : 'ph_break')
+                : (game.servOrRet === 'serviceGame' ? 'ph_service_down' : 'ph_kept_by_opponent');
             
             const gameHeader = document.createElement('div');
             gameHeader.className = 'game-header';
             
-            const serverInfo = server ? ` - <span class="game-server">サーバー: ${server}</span>` : '';
-            gameHeader.innerHTML = `<h4>第${gameIndex + 1}ゲーム (${gameType})${serverInfo} - <span class="game-result">${result}</span></h4>`;
+            const serverInfo = game.server ? ` - <span class="game-server">${translate('ph_server')}: ${game.server}</span>` : '';
+            gameHeader.innerHTML = `<h4>${translate('ph_game_x', {number: gameIndex + 1})} (${translate(gameTypeKey)})${serverInfo} - <span class="game-result">${translate(resultKey)}</span></h4>`;
             historyContainer.appendChild(gameHeader);
 
             const table = document.createElement('table');
             table.className = 'point-history-table';
-            table.innerHTML = `<thead><tr><th>ポジション</th><th>ポイント</th><th>Get/Lost</th><th>サービス</th><th>ショット</th><th>誰が</th></tr></thead>`;
+            table.innerHTML = `<thead><tr>
+                <th>${translate('ph_position')}</th>
+                <th>${translate('ph_point')}</th>
+                <th>${translate('ph_get_lost')}</th>
+                <th>${translate('ph_service')}</th>
+                <th>${translate('ph_shot')}</th>
+                <th>${translate('ph_whose')}</th>
+            </tr></thead>`;
             const tbody = document.createElement('tbody');
 
             let pointsInGame = pointsByGame[game.gameId] || [];
@@ -115,21 +121,23 @@ export function renderPointHistory() {
                 
                 pointsInGame.forEach(point => {
                     const row = tbody.insertRow();
+                    // ▼▼▼ ここを修正 ▼▼▼
                     row.insertCell().textContent = translate(point.myPosition) || point.myPosition;
+                    // ▲▲▲ 修正ここまで ▲▲▲
                     row.insertCell().textContent = point.inGameScoreAfter || 'N/A';
                     
                     const getLostCell = row.insertCell();
-                    const getLostText = point.whichPoint === 'myTeam' ? 'Get' : 'Lost';
+                    const getLostText = point.whichPoint === 'myTeam' ? translate('ph_get') : translate('ph_lost');
                     getLostCell.textContent = getLostText;
-                    getLostCell.className = getLostText === 'Get' ? 'point-get' : 'point-lost';
+                    getLostCell.className = getLostText === translate('ph_get') ? 'point-get' : 'point-lost';
 
                     const serviceCell = row.insertCell();
                     if (point.whichPoint === 'myTeam' && point.shot === 'serve' && point.service === 'second') {
-                        serviceCell.textContent = 'DF (相手)';
+                        serviceCell.textContent = translate('ph_df_opponent');
                     } else if (point.whichPoint === 'opponent' && point.shot === 'serve' && point.service === 'second') {
-                        serviceCell.textContent = 'DF';
+                        serviceCell.textContent = translate('ph_df_you');
                     } else {
-                        serviceCell.textContent = point.service === 'first' ? '1st' : '2nd';
+                        serviceCell.textContent = point.service === 'first' ? translate('ph_1st') : translate('ph_2nd');
                     }
 
                     row.insertCell().textContent = '-';

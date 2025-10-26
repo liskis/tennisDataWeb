@@ -1,14 +1,25 @@
 import { fetchAllGameData } from './firebase/data.js';
 import { calculateAllStats } from './stats/calculator.js';
-import { renderScoreArea, renderPointHistory, drawBasicCharts, drawAdvanceCharts, setupUIEventListeners } from './ui/renderer.js';
+// ▼▼▼ `updateLanguageSwitcherUI` をインポートに追加 ▼▼▼
+import { renderScoreArea, setupUIEventListeners, updateStaticText, updateLanguageSwitcherUI } from './ui/renderer.js';
+import { initI18n } from './i18n.js';
 
 // --- Global State ---
 export let ALL_DATA = {};
 export let CURRENT_STATS = {};
 export let SELECTED_SET = 0;
+export let PLAYER_NAMES = {
+  mySelf: 'You',
+  partner: 'Partner',
+  opponentTeam: 'Opponent'
+};
 
 export function updateSelectedSet(newSet) {
   SELECTED_SET = newSet;
+}
+
+export function recalculateStats() {
+  CURRENT_STATS = calculateAllStats();
 }
 
 export function normalizeTimestamp(timestampField) {
@@ -28,8 +39,11 @@ const googleChartsPromise = new Promise(resolve => google.charts.setOnLoadCallba
 
 // --- Main Application Logic ---
 async function main() {
+  initI18n(); 
+  updateStaticText(); 
+
   await googleChartsPromise;
-  console.log("Google Chartsの準備が完了しました。");
+  console.log("Google Charts ready.");
 
   const loadingIndicator = document.getElementById('loading-indicator');
   const appContainer = document.getElementById('app-container');
@@ -37,18 +51,15 @@ async function main() {
   try {
     const isLocal = location.hostname === "localhost" || location.hostname === "127.0.0.1";
     
-    // index.htmlで初期化されたグローバルなfirebaseオブジェクトを使用
     const db = firebase.firestore();
     const auth = firebase.auth();
 
     if (isLocal) {
-      console.log("ローカル環境で実行します。");
-      db.useEmulator('localhost', 8080); // Compat版のエミュレータ接続方法
-      console.log("ローカルのFirestoreエミュレータに接続しました。");
+      console.log("Running in local environment.");
     } else {
-      console.log("本番環境で実行します。");
+      console.log("Running in production environment.");
       await auth.signInAnonymously();
-      console.log("匿名認証に成功しました。");
+      console.log("Signed in anonymously.");
     }
     
     const url = new URL(window.location.href);
@@ -60,37 +71,50 @@ async function main() {
       loadingIndicator.style.display = 'none';
       appContainer.style.display = 'block';
 
-      updateAndRender();
       setupUIEventListeners();
+      document.querySelector('.tab-button.active').click();
     } else {
-      loadingIndicator.textContent = '試合IDが指定されていません';
+      loadingIndicator.setAttribute('data-i18n-key', 'no_match_id');
+      updateStaticText();
     }
   } catch (error) {
-      if (error.code && (error.code.includes('permission-denied') || error.code.includes('unauthenticated'))) {
-        loadingIndicator.textContent = 'データの読み込みに失敗しました。アクセス権限を確認してください。';
-      } else {
-        loadingIndicator.textContent = `エラーが発生しました: ${error.message || '詳細不明'}`;
+      const errorKey = (error.code && (error.code.includes('permission-denied') || error.code.includes('unauthenticated')))
+          ? 'error_loading'
+          : 'error_generic';
+      loadingIndicator.setAttribute('data-i18n-key', errorKey);
+      updateStaticText();
+      if (errorKey === 'error_generic') {
+          loadingIndicator.textContent += (error.message || 'Unknown error');
       }
-      console.error("メイン処理でエラー:", error);
+      console.error("Error in main process:", error);
   }
 }
 
 // --- UI Update Trigger ---
-export function updateAndRender() {
+export async function updateAndRender() {
+    updateStaticText();
+    updateLanguageSwitcherUI(); // ▼▼▼ ここでボタンUIの更新を呼び出す ▼▼▼
     renderScoreArea();
-    CURRENT_STATS = calculateAllStats();
+    recalculateStats();
 
-    const activeTabId = document.querySelector('.tab-button.active').dataset.tab;
-    switch (activeTabId) {
-        case 'basic-data':
-            drawBasicCharts();
-            break;
-        case 'advance-data':
-            drawAdvanceCharts();
-            break;
-        case 'point-history':
-            renderPointHistory();
-            break;
+    const activeTab = document.querySelector('.tab-button.active');
+    if (activeTab) {
+        const activeTabId = activeTab.dataset.tab;
+        const rendererModule = await import('./ui/renderer.js');
+        switch (activeTabId) {
+            case 'basic-data':
+                rendererModule.drawBasicCharts();
+                break;
+            case 'advance-data':
+                rendererModule.drawAdvanceCharts();
+                break;
+            case 'point-history':
+                rendererModule.renderPointHistory();
+                break;
+            case 'ai-analysis':
+                rendererModule.renderAiAnalysis();
+                break;
+        }
     }
 }
 

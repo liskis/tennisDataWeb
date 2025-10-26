@@ -1,5 +1,6 @@
-import { ALL_DATA, CURRENT_STATS } from '../main.js';
-import { getCssVariable, translate } from './utils.js';
+import { ALL_DATA, CURRENT_STATS, PLAYER_NAMES } from '../main.js';
+import { getCssVariable } from './utils.js';
+import { translate } from '../i18n.js';
 
 function createBarChartRow(label, data, color) {
     const row = document.createElement('div');
@@ -9,8 +10,10 @@ function createBarChartRow(label, data, color) {
     return row;
 }
 
-// 3. 解説文を取得するヘルパー関数
+// ... (getChartExplanation and drawPieChart functions remain the same as before)
 function getChartExplanation(chartId) {
+    // NOTE: This part is not translated for brevity. 
+    // For a full solution, these strings should also be moved to i18n.js
     const explanations = {
         get_lost_point_chart: "テニスは相手よりも１ポイントでも多く取ったほうが勝ちますが、ゲームとセットに分かれているためにその限りではありません。ゲーム数では圧倒していても、ポイント差は少ない場合は、大事なところでポイントが取れているという事でしょう。",
         point_rate_sv_rtn_chart: "テニスはサービスゲームの方が有利とされています。サービスゲームの取得率がリターンゲームの取得率よりも低い場合は、サービスゲームの取得率を上がるようにしていきたいです。サーブだけではなく、サーブの後のポジションや、サーブの次のショットも改善していきましょう！",
@@ -43,30 +46,29 @@ function drawPieChart(elementId, title, data, colors, options = {}) {
     chartElement.innerHTML = '';
 
     if (realTotal === 0) {
-        chartElement.innerHTML = `<div class="chart-title" style="text-align:center;font-weight:bold;color:#666;padding-top:20px;">${title}</div><div class="no-data-text" style="text-align:center;padding-top:50px;color:#999;">データがありません</div>`;
+        chartElement.innerHTML = `<div class="chart-title" style="text-align:center;font-weight:bold;color:#666;padding-top:20px;">${title}</div><div class="no-data-text" style="text-align:center;padding-top:50px;color:#999;">${translate('no_data_to_display')}</div>`;
         return;
     }
 
-    // --- 1. 半円グラフ描画ロジックを復活 ---
     const chartDataForDrawing = [header, ...body.map(row => [row[0], row[1]])];
-    chartDataForDrawing.push(['', realTotal]); // 半円用のダミーデータ
+    chartDataForDrawing.push(['', realTotal]);
 
     const dataTable = google.visualization.arrayToDataTable(chartDataForDrawing);
     const dummySliceIndex = chartDataForDrawing.length - 2;
     
     const chartOptions = {
         title,
-        pieHole: 0.4, // 太さを戻す
+        pieHole: 0.4,
         colors,
         legend: 'none',
-        pieStartAngle: -90, // 半円にする
+        pieStartAngle: -90,
         width: '100%',
         height: '100%',
-        chartArea: { left: '5%', top: '10%', width: '90%', height: '80%' }, // 上に少し寄せる
+        chartArea: { left: '5%', top: '10%', width: '90%', height: '80%' },
         tooltip: { trigger: 'none' },
         pieSliceText: 'percentage',
         pieSliceTextStyle: { color: 'white', fontSize: 12 },
-        slices: { [dummySliceIndex]: { color: 'transparent' } } // ダミーを透明に
+        slices: { [dummySliceIndex]: { color: 'transparent' } }
     };
     new google.visualization.PieChart(chartElement).draw(dataTable, chartOptions);
 
@@ -106,71 +108,63 @@ function drawPieChart(elementId, title, data, colors, options = {}) {
     parentBox.appendChild(legendWrapper);
 }
 
+
 export function drawBasicCharts() {
     const stats = CURRENT_STATS;
+    const container = document.getElementById('basic-data');
     if (!stats || Object.keys(stats).length === 0) {
-        document.getElementById('basic-data').innerHTML = '<h2>試合データ</h2><p>表示するデータがありません</p>';
+        container.innerHTML = `<h2>${translate('tab_basic_data')}</h2><p>${translate('no_data_to_display')}</p>`;
         return;
     }
     const isDoubles = ALL_DATA.matchData[0]?.matchFormat === 'doubles';
     const colors = { me: getCssVariable('--my-color'), partner: getCssVariable('--partner-color'), opponent: getCssVariable('--opponent-color'), info: getCssVariable('--info-color'), success: getCssVariable('--success-color'), danger: getCssVariable('--danger-color') };
     const clearAndAppend = (groupId, elements) => { const group = document.getElementById(groupId); if(group) { group.innerHTML = ''; group.append(...elements.filter(Boolean)); } };
-    clearAndAppend('first-serve-group', [stats.firstSvIn && createBarChartRow('自分', stats.firstSvIn, colors.me), isDoubles && stats.firstSvInPartner && createBarChartRow('パートナー', stats.firstSvInPartner, colors.partner), stats.firstSvInOpponent && createBarChartRow('相手', stats.firstSvInOpponent, colors.opponent)]);
-    clearAndAppend('second-serve-group', [stats.secondSvIn && createBarChartRow('自分', stats.secondSvIn, colors.me), isDoubles && stats.secondSvInPartner && createBarChartRow('パートナー', stats.secondSvInPartner, colors.partner), stats.secondSvInOpponent && createBarChartRow('相手', stats.secondSvInOpponent, colors.opponent)]);
-    clearAndAppend('double-fault-group', [stats.doubleFault && createBarChartRow('自分', stats.doubleFault, colors.me), isDoubles && stats.doubleFaultPartner && createBarChartRow('パートナー', stats.doubleFaultPartner, colors.partner), stats.doubleFaultOpponent && createBarChartRow('相手', stats.doubleFaultOpponent, colors.opponent)]);
-    clearAndAppend('at-first-sv-group', [stats.atFirstSv && createBarChartRow('自分', stats.atFirstSv, colors.me), isDoubles && stats.atFirstSvPartner && createBarChartRow('パートナー', stats.atFirstSvPartner, colors.partner)]);
-    clearAndAppend('at-second-sv-group', [stats.atSecondSv && createBarChartRow('自分', stats.atSecondSv, colors.me), isDoubles && stats.atSecondSvPartner && createBarChartRow('パートナー', stats.atSecondSvPartner, colors.partner)]);
-    clearAndAppend('at-first-return-group', [stats.atFirstReturn && createBarChartRow('自分', stats.atFirstReturn, colors.me), isDoubles && stats.atFirstReturnPartner && createBarChartRow('パートナー', stats.atFirstReturnPartner, colors.partner)]);
-    clearAndAppend('at-second-return-group', [stats.atSecondReturn && createBarChartRow('自分', stats.atSecondReturn, colors.me), isDoubles && stats.atSecondReturnPartner && createBarChartRow('パートナー', stats.atSecondReturnPartner, colors.partner)]);
-    clearAndAppend('game-rate-group', [stats.keepRate && createBarChartRow(translate('Keep rate'), stats.keepRate, colors.success), stats.breakRate && createBarChartRow(translate('Break rate'), stats.breakRate, colors.danger)]);
+    clearAndAppend('first-serve-group', [stats.firstSvIn && createBarChartRow(PLAYER_NAMES.mySelf, stats.firstSvIn, colors.me), isDoubles && stats.firstSvInPartner && createBarChartRow(PLAYER_NAMES.partner, stats.firstSvInPartner, colors.partner), stats.firstSvInOpponent && createBarChartRow(PLAYER_NAMES.opponentTeam, stats.firstSvInOpponent, colors.opponent)]);
+    clearAndAppend('second-serve-group', [stats.secondSvIn && createBarChartRow(PLAYER_NAMES.mySelf, stats.secondSvIn, colors.me), isDoubles && stats.secondSvInPartner && createBarChartRow(PLAYER_NAMES.partner, stats.secondSvInPartner, colors.partner), stats.secondSvInOpponent && createBarChartRow(PLAYER_NAMES.opponentTeam, stats.secondSvInOpponent, colors.opponent)]);
+    clearAndAppend('double-fault-group', [stats.doubleFault && createBarChartRow(PLAYER_NAMES.mySelf, stats.doubleFault, colors.me), isDoubles && stats.doubleFaultPartner && createBarChartRow(PLAYER_NAMES.partner, stats.doubleFaultPartner, colors.partner), stats.doubleFaultOpponent && createBarChartRow(PLAYER_NAMES.opponentTeam, stats.doubleFaultOpponent, colors.opponent)]);
+    clearAndAppend('at-first-sv-group', [stats.atFirstSv && createBarChartRow(PLAYER_NAMES.mySelf, stats.atFirstSv, colors.me), isDoubles && stats.atFirstSvPartner && createBarChartRow(PLAYER_NAMES.partner, stats.atFirstSvPartner, colors.partner)]);
+    clearAndAppend('at-second-sv-group', [stats.atSecondSv && createBarChartRow(PLAYER_NAMES.mySelf, stats.atSecondSv, colors.me), isDoubles && stats.atSecondSvPartner && createBarChartRow(PLAYER_NAMES.partner, stats.atSecondSvPartner, colors.partner)]);
+    clearAndAppend('at-first-return-group', [stats.atFirstReturn && createBarChartRow(PLAYER_NAMES.mySelf, stats.atFirstReturn, colors.me), isDoubles && stats.atFirstReturnPartner && createBarChartRow(PLAYER_NAMES.partner, stats.atFirstReturnPartner, colors.partner)]);
+    clearAndAppend('at-second-return-group', [stats.atSecondReturn && createBarChartRow(PLAYER_NAMES.mySelf, stats.atSecondReturn, colors.me), isDoubles && stats.atSecondReturnPartner && createBarChartRow(PLAYER_NAMES.partner, stats.atSecondReturnPartner, colors.partner)]);
+    clearAndAppend('game-rate-group', [stats.keepRate && createBarChartRow(translate('label_keep_rate'), stats.keepRate, colors.success), stats.breakRate && createBarChartRow(translate('label_break_rate'), stats.breakRate, colors.danger)]);
     
-    if (stats.getAndLostPoint) { const { get, lost, total } = stats.getAndLostPoint; drawPieChart('get_lost_point_chart', translate('GetPoint and LostPoint') + ` (${total})`, [['Result', 'Points'], [translate('Get\nPoint'), get], [translate('Lost\nPoint'), lost]], [colors.me, colors.opponent], { description: getChartExplanation('get_lost_point_chart') }); }
-    if (stats.pointRateBySvOrRtn) {
-        const { service, return: ret } = stats.pointRateBySvOrRtn;
-        drawPieChart('point_rate_sv_rtn_chart', translate('PointRate By ServiceGame or RetrunGame'),
-            [['Type', 'Rate'], [translate('Service\nGame'), service.rate, service], [translate('Return\nGame'), ret.rate, ret]],
-            [colors.me, colors.partner], { useFractionalLegend: true, description: getChartExplanation('point_rate_sv_rtn_chart') }
-        );
-    }
-    if (stats.pointRateByServiceSide) {
-        const { adv, duce } = stats.pointRateByServiceSide;
-        drawPieChart('point_rate_service_side_chart', translate('Point acquisition rate\nby service side'), [['Side', 'Rate'], [translate('Advantage\nSide'), adv.rate, adv], [translate('Duce\nSide'), duce.rate, duce]], [colors.me, colors.info], { useFractionalLegend: true, description: getChartExplanation('point_rate_service_side_chart') });
-    }
-    if (stats.pointRateByReturnSide) {
-        const { adv, duce } = stats.pointRateByReturnSide;
-        drawPieChart('point_rate_return_side_chart', translate('Point acquisition rate\nby return side'), [['Side', 'Rate'], [translate('Advantage\nSide'), adv.rate, adv], [translate('Duce\nSide'), duce.rate, duce]], [colors.me, colors.info], { useFractionalLegend: true, description: getChartExplanation('point_rate_return_side_chart') });
-    }
-    if (stats.getAndLostGame) { const { get, lost, total } = stats.getAndLostGame; drawPieChart('get_lost_game_chart', translate('GetGame\n and LostGame') + ` (${total}G)`, [['Result', 'Games'], [translate('Get\nGame'), get], [translate("Couldn't\nGet"), lost]], [colors.success, colors.danger], { description: getChartExplanation('get_lost_game_chart') }); }
-    if (stats.breakAndServiceDown) {
-        const { break: brk, serviceDown: sDown } = stats.breakAndServiceDown;
-        drawPieChart('break_service_down_chart', translate('Break and\n Service Down'),
-            [['Type', 'Rate'], [translate('Break\nRate'), brk.rate, brk], [translate('Service\nDown'), sDown.rate, sDown]],
-            [colors.success, colors.danger], { useFractionalLegend: true, description: getChartExplanation('break_service_down_chart') }
-        );
-    }
+    if (stats.getAndLostPoint) { const { get, lost, total } = stats.getAndLostPoint; drawPieChart('get_lost_point_chart', `${translate('pie_get_lost_point')} (${total})`, [['Result', 'Points'], [translate('pie_get_point'), get], [translate('pie_lost_point'), lost]], [colors.me, colors.opponent], { description: getChartExplanation('get_lost_point_chart') }); }
+    if (stats.pointRateBySvOrRtn) { const { service, return: ret } = stats.pointRateBySvOrRtn; drawPieChart('point_rate_sv_rtn_chart', translate('pie_point_rate_sv_rtn'), [['Type', 'Rate'], [translate('pie_service_game'), service.rate, service], [translate('pie_return_game'), ret.rate, ret]], [colors.me, colors.partner], { useFractionalLegend: true, description: getChartExplanation('point_rate_sv_rtn_chart') }); }
+    if (stats.pointRateByServiceSide) { const { adv, duce } = stats.pointRateByServiceSide; drawPieChart('point_rate_service_side_chart', translate('pie_point_rate_service_side'), [['Side', 'Rate'], [translate('pie_adv_side'), adv.rate, adv], [translate('pie_duce_side'), duce.rate, duce]], [colors.me, colors.info], { useFractionalLegend: true, description: getChartExplanation('point_rate_service_side_chart') }); }
+    if (stats.pointRateByReturnSide) { const { adv, duce } = stats.pointRateByReturnSide; drawPieChart('point_rate_return_side_chart', translate('pie_point_rate_return_side'), [['Side', 'Rate'], [translate('pie_adv_side'), adv.rate, adv], [translate('pie_duce_side'), duce.rate, duce]], [colors.me, colors.info], { useFractionalLegend: true, description: getChartExplanation('point_rate_return_side_chart') }); }
+    if (stats.getAndLostGame) { const { get, lost, total } = stats.getAndLostGame; drawPieChart('get_lost_game_chart', `${translate('pie_get_lost_game')} (${total}G)`, [['Result', 'Games'], [translate('pie_get_game'), get], [translate('pie_lost_game'), lost]], [colors.success, colors.danger], { description: getChartExplanation('get_lost_game_chart') }); }
+    if (stats.breakAndServiceDown) { const { break: brk, serviceDown: sDown } = stats.breakAndServiceDown; drawPieChart('break_service_down_chart', translate('pie_break_service_down'), [['Type', 'Rate'], [translate('pie_break_rate'), brk.rate, brk], [translate('pie_service_down'), sDown.rate, sDown]], [colors.success, colors.danger], { useFractionalLegend: true, description: getChartExplanation('break_service_down_chart') }); }
 }
 
 export function drawAdvanceCharts() {
     const stats = CURRENT_STATS;
-    if (!stats || Object.keys(stats).length === 0) { document.getElementById('advance-data').innerHTML = `<h2>${translate('AdvanceData')}</h2><p>表示するデータがありません</p>`; return; }
+    const container = document.getElementById('advance-data');
+    if (!stats || Object.keys(stats).length === 0) { container.innerHTML = `<h2>${translate('tab_advance_data')}</h2><p>${translate('no_data_to_display')}</p>`; return; }
     const isDoubles = ALL_DATA.matchData[0]?.matchFormat === 'doubles';
-    const colors = { me: getCssVariable('--my-winner'), partner: getCssVariable('--par-winner'), opponent: getCssVariable('--opp-winner'), myMiss: getCssVariable('--my-miss'), parMiss: getCssVariable('--par-miss'), oppMiss: getCssVariable('--opp-miss')};
+    
+    const colors = { me: getCssVariable('--my-winner'), partner: getCssVariable('--par-winner'), opponent: getCssVariable('--opp-winner'), myMiss: getCssVariable('--my-miss'), parMiss: getCssVariable('--par-miss'), oppMiss: getCssVariable('--opp-miss'), success: getCssVariable('--success-color'), danger: getCssVariable('--danger-color') };
     const clearAndAppend = (groupId, elements) => { const group = document.getElementById(groupId); if (group) { group.innerHTML = ''; group.append(...elements.filter(Boolean)); } };
+    
+    clearAndAppend('one-point-match-rate-group', [
+        stats.onePointMatchRateAtServ && createBarChartRow(translate('label_service_game'), stats.onePointMatchRateAtServ, colors.success),
+        stats.onePointMatchRateAtRetn && createBarChartRow(translate('label_return_game'), stats.onePointMatchRateAtRetn, colors.danger)
+    ]);
+
     clearAndAppend('winning-rate-group', [
-        stats.myWinningRate && createBarChartRow(translate('MySelf'), stats.myWinningRate, colors.me),
-        isDoubles && stats.partnersWinningRate && createBarChartRow(translate('Partner'), stats.partnersWinningRate, colors.partner),
-        stats.opponentsWinningRate && createBarChartRow(translate('Opponent'), stats.opponentsWinningRate, colors.opponent)
+        stats.myWinningRate && createBarChartRow(PLAYER_NAMES.mySelf, stats.myWinningRate, colors.me),
+        isDoubles && stats.partnersWinningRate && createBarChartRow(PLAYER_NAMES.partner, stats.partnersWinningRate, colors.partner),
+        stats.opponentsWinningRate && createBarChartRow(PLAYER_NAMES.opponentTeam, stats.opponentsWinningRate, colors.opponent)
     ]);
     
     if (isDoubles) {
-        if (stats.breakDownOfGetPointDbls) { const { myWinner, partnerWinner, opponentMiss } = stats.breakDownOfGetPointDbls; drawPieChart('get_point_breakdown_chart', translate('breakdown of getPoint'), [['Type', 'Points'], [translate('My\nWinner'), myWinner], [translate('Partners\nWinner'), partnerWinner], [translate('Opponent\nMiss'), opponentMiss]], [colors.me, colors.partner, colors.oppMiss], { description: getChartExplanation('get_point_breakdown_chart') }); }
-        if (stats.breakDownOfLostPointDbls) { const { myMiss, partnerMiss, opponentWinner } = stats.breakDownOfLostPointDbls; drawPieChart('lost_point_breakdown_chart', translate('breakdown of lostPoint'), [['Type', 'Points'], [translate('My\nMiss'), myMiss], [translate('Partners\nMiss'), partnerMiss], [translate('Opponent\nWinner'), opponentWinner]], [colors.myMiss, colors.parMiss, colors.opponent], { description: getChartExplanation('lost_point_breakdown_chart') }); }
-        if (stats.breakDownOfWinnerPointDbls) { const { myWinner, partnerWinner, opponentWinner } = stats.breakDownOfWinnerPointDbls; drawPieChart('winner_point_breakdown_chart', translate('breakdown of winnerPoint'), [['Type', 'Points'], [translate('My\nWinner'), myWinner], [translate('Partners\nWinner'), partnerWinner], [translate('Opponent\nWinner'), opponentWinner]], [colors.me, colors.partner, colors.opponent], { description: getChartExplanation('winner_point_breakdown_chart') }); }
-        if (stats.breakDownOfMissPointDbls) { const { myMiss, partnerMiss, opponentMiss } = stats.breakDownOfMissPointDbls; drawPieChart('miss_point_breakdown_chart', translate('breakdown of missPoint'), [['Type', 'Points'], [translate('My\nMiss'), myMiss], [translate('Partners\nMiss'), partnerMiss], [translate('Opponent\nMiss'), opponentMiss]], [colors.myMiss, colors.parMiss, colors.oppMiss], { description: getChartExplanation('miss_point_breakdown_chart') }); }
+        if (stats.breakDownOfGetPointDbls) { const { myWinner, partnerWinner, opponentMiss } = stats.breakDownOfGetPointDbls; drawPieChart('get_point_breakdown_chart', translate('pie_get_point_breakdown'), [['Type', 'Points'], [translate('pie_my_winner'), myWinner], [translate('pie_partner_winner'), partnerWinner], [translate('pie_opponent_miss'), opponentMiss]], [colors.me, colors.partner, colors.oppMiss], { description: getChartExplanation('get_point_breakdown_chart') }); }
+        if (stats.breakDownOfLostPointDbls) { const { myMiss, partnerMiss, opponentWinner } = stats.breakDownOfLostPointDbls; drawPieChart('lost_point_breakdown_chart', translate('pie_lost_point_breakdown'), [['Type', 'Points'], [translate('pie_my_miss'), myMiss], [translate('pie_partner_miss'), partnerMiss], [translate('pie_opponent_winner'), opponentWinner]], [colors.myMiss, colors.parMiss, colors.opponent], { description: getChartExplanation('lost_point_breakdown_chart') }); }
+        if (stats.breakDownOfWinnerPointDbls) { const { myWinner, partnerWinner, opponentWinner } = stats.breakDownOfWinnerPointDbls; drawPieChart('winner_point_breakdown_chart', translate('pie_winner_breakdown'), [['Type', 'Points'], [translate('pie_my_winner'), myWinner], [translate('pie_partner_winner'), partnerWinner], [translate('pie_opponent_winner'), opponentWinner]], [colors.me, colors.partner, colors.opponent], { description: getChartExplanation('winner_point_breakdown_chart') }); }
+        if (stats.breakDownOfMissPointDbls) { const { myMiss, partnerMiss, opponentMiss } = stats.breakDownOfMissPointDbls; drawPieChart('miss_point_breakdown_chart', translate('pie_miss_breakdown'), [['Type', 'Points'], [translate('pie_my_miss'), myMiss], [translate('pie_partner_miss'), partnerMiss], [translate('pie_opponent_miss'), opponentMiss]], [colors.myMiss, colors.parMiss, colors.oppMiss], { description: getChartExplanation('miss_point_breakdown_chart') }); }
     } else {
-        if (stats.breakDownOfGetPoint) { const { myWinner, opponentMiss } = stats.breakDownOfGetPoint; drawPieChart('get_point_breakdown_chart', translate('breakdown of getPoint'), [['Type', 'Points'], [translate('My\nWinner'), myWinner], [translate('Opponent\nMiss'), opponentMiss]], [colors.me, colors.oppMiss], { description: getChartExplanation('get_point_breakdown_chart').replace('＋味方が決めた', '') }); }
-        if (stats.breakDownOfLostPoint) { const { myMiss, opponentWinner } = stats.breakDownOfLostPoint; drawPieChart('lost_point_breakdown_chart', translate('breakdown of lostPoint'), [['Type', 'Points'], [translate('My\nMiss'), myMiss], [translate('Opponent\nWinner'), opponentWinner]], [colors.myMiss, colors.opponent], { description: getChartExplanation('lost_point_breakdown_chart').replace('＋味方がミス', '') }); }
-        if (stats.breakDownOfWinnerPoint) { const { myWinner, opponentWinner } = stats.breakDownOfWinnerPoint; drawPieChart('winner_point_breakdown_chart', translate('breakdown of winnerPoint'), [['Type', 'Points'], [translate('My\nWinner'), myWinner], [translate('Opponent\nWinner'), opponentWinner]], [colors.me, colors.opponent], { description: getChartExplanation('winner_point_breakdown_chart').replace('＋味方が決めた', '') }); }
-        if (stats.breakDownOfMissPoint) { const { myMiss, opponentMiss } = stats.breakDownOfMissPoint; drawPieChart('miss_point_breakdown_chart', translate('breakdown of missPoint'), [['Type', 'Points'], [translate('My\nMiss'), myMiss], [translate('Opponent\nMiss'), opponentMiss]], [colors.myMiss, colors.oppMiss], { description: getChartExplanation('miss_point_breakdown_chart').replace('＋味方がミス', '') }); }
+        if (stats.breakDownOfGetPoint) { const { myWinner, opponentMiss } = stats.breakDownOfGetPoint; drawPieChart('get_point_breakdown_chart', translate('pie_get_point_breakdown'), [['Type', 'Points'], [translate('pie_my_winner'), myWinner], [translate('pie_opponent_miss'), opponentMiss]], [colors.me, colors.oppMiss], { description: getChartExplanation('get_point_breakdown_chart').replace('＋味方が決めた', '') }); }
+        if (stats.breakDownOfLostPoint) { const { myMiss, opponentWinner } = stats.breakDownOfLostPoint; drawPieChart('lost_point_breakdown_chart', translate('pie_lost_point_breakdown'), [['Type', 'Points'], [translate('pie_my_miss'), myMiss], [translate('pie_opponent_winner'), opponentWinner]], [colors.myMiss, colors.opponent], { description: getChartExplanation('lost_point_breakdown_chart').replace('＋味方がミス', '') }); }
+        if (stats.breakDownOfWinnerPoint) { const { myWinner, opponentWinner } = stats.breakDownOfWinnerPoint; drawPieChart('winner_point_breakdown_chart', translate('pie_winner_breakdown'), [['Type', 'Points'], [translate('pie_my_winner'), myWinner], [translate('pie_opponent_winner'), opponentWinner]], [colors.me, colors.opponent], { description: getChartExplanation('winner_point_breakdown_chart').replace('＋味方が決めた', '') }); }
+        if (stats.breakDownOfMissPoint) { const { myMiss, opponentMiss } = stats.breakDownOfMissPoint; drawPieChart('miss_point_breakdown_chart', translate('pie_miss_breakdown'), [['Type', 'Points'], [translate('pie_my_miss'), myMiss], [translate('pie_opponent_miss'), opponentMiss]], [colors.myMiss, colors.oppMiss], { description: getChartExplanation('miss_point_breakdown_chart').replace('＋味方がミス', '') }); }
     }
 }

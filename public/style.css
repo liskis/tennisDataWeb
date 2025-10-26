@@ -502,3 +502,46 @@ nav#tab-navigation {
   #point-history-table td:nth-child(6) { width: 32%; }
   
 }
+
+/* style.css に追記 */
+
+.language-switcher {
+    margin-top: 8px;
+}
+
+.language-switcher button {
+    background: none;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.language-switcher button.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.language-switcher .separator {
+    color: #ccc;
+    margin: 0 4px;
+}
+
+/* ---- ヘッダー固定用のスタイル ---- */
+
+.sticky-header {
+  position: -webkit-sticky; /* Safari用の古い書き方 */
+  position: sticky;
+  top: 0;
+  z-index: 1000; /* 他の要素より手前に表示させる */
+  
+  /* 
+    スクロール時に下のコンテンツが透けないように背景色を指定します。
+    bodyの背景色など、ページ全体の背景色に合わせてください。
+    白系の背景なら background-color: white; や background-color: #f8f9fa; など。
+  */
+  background-color: white; 
+}

@@ -1,5 +1,5 @@
 export async function fetchAllGameData(db, targetMatchId) {
-    const matchRelatedCollections = ['matchData', 'setData', 'gameData', 'pointData'];
+    const matchRelatedCollections = ['matchData', 'setData', 'gameData', 'pointData', 'geminiData'];
     const matchPromises = matchRelatedCollections.map(async (colName) => {
         const dataRef = db.collection(colName); 
         const q = dataRef.where("matchId", "==", targetMatchId);

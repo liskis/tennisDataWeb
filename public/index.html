@@ -3,77 +3,85 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>テニス試合分析</title>
+  <title>Tennis Data Web</title>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <link rel="stylesheet" href="style.css">
 
-  <!-- ▼▼▼ ここから追加 ▼▼▼ -->
   <!-- Firebase SDKs (Compat version) -->
   <script src="/__/firebase/10.12.3/firebase-app-compat.js"></script>
   <script src="/__/firebase/10.12.3/firebase-auth-compat.js"></script>
   <script src="/__/firebase/10.12.3/firebase-firestore-compat.js"></script>
   
   <!-- Firebaseの初期化 -->
-  <script src="/__/firebase/init.js"></script>
-  <!-- ▲▲▲ 追加ここまで ▲▲▲ -->
+  <script src="/__/firebase/init.js?useEmulator=true"></script>
 </head>
 <body>
-  <div id="loading-indicator">試合データを読み込み中...</div>
+  <div id="loading-indicator" data-i18n-key="loading">試合データを読み込み中...</div>
 
   <div id="app-container" style="display: none;">
     
-    <header id="score-area">
-      <div id="match-info">
-        <p id="match-date"></p>
-        <p id="match-type"></p>
-      </div>
-      <div id="player-names">
-        <!-- JSでプレイヤー名が挿入されます -->
-      </div>
-      <div id="set-scores">
-        <!-- JSでセットスコアボタンが挿入されます -->
-      </div>
-    </header>
+    <!-- ▼▼▼ ここから変更 ▼▼▼ -->
+    <div class="sticky-header">
+      <header id="score-area">
+        <div id="match-info">
+          <p id="match-date"></p>
+          <p id="match-type"></p>
+          <div id="language-switcher" class="language-switcher">
+              <button data-lang="en">English</button>
+              <span class="separator">/</span>
+              <button data-lang="ja">日本語</button>
+          </div>
+        </div>
+        <div id="player-names">
+          <!-- JSでプレイヤー名が挿入されます -->
+        </div>
+        <div id="set-scores">
+          <!-- JSでセットスコアボタンが挿入されます -->
+        </div>
+      </header>
 
-    <nav id="tab-navigation">
-      <button class="tab-button active" data-tab="basic-data">試合データ</button>
-      <button class="tab-button" data-tab="advance-data">アドバンスデータ</button>
-      <button class="tab-button" data-tab="point-history">ポイント履歴</button>
-    </nav>
+      <nav id="tab-navigation">
+        <button class="tab-button active" data-tab="basic-data" data-i18n-key="tab_basic_data">試合データ</button>
+        <button class="tab-button" data-tab="advance-data" data-i18n-key="tab_advance_data">アドバンスデータ</button>
+        <button class="tab-button" data-tab="point-history" data-i18n-key="tab_point_history">ポイント履歴</button>
+        <button class="tab-button" data-tab="ai-analysis" data-i18n-key="tab_ai_analysis">AIで分析</button>
+      </nav>
+    </div>
+    <!-- ▲▲▲ 変更ここまで ▲▲▲ -->
 
     <main id="tab-content">
       
       <div id="basic-data" class="tab-panel active">
         <section class="analysis-section">
-          <header class="section-header"><h3>ファーストサーブ確率</h3></header>
+          <header class="section-header"><h3 data-i18n-key="header_first_serve_prob">ファーストサーブの確率</h3></header>
           <div class="bar-chart-group" id="first-serve-group"></div>
         </section>
         <section class="analysis-section">
-          <header class="section-header"><h3>セカンドサーブ確率</h3></header>
+          <header class="section-header"><h3 data-i18n-key="header_second_serve_prob">セカンドサーブの確率</h3></header>
           <div class="bar-chart-group" id="second-serve-group"></div>
         </section>
         <section class="analysis-section">
-          <header class="section-header"><h3>ダブルフォルト率</h3></header>
+          <header class="section-header"><h3 data-i18n-key="header_double_fault_rate">ダブルフォルト率</h3></header>
           <div class="bar-chart-group" id="double-fault-group"></div>
         </section>
         <section class="analysis-section">
-          <header class="section-header"><h3>ファーストサーブ時のポイント獲得率</h3></header>
+          <header class="section-header"><h3 data-i18n-key="header_win_rate_on_1st_serve">ファーストサーブ時のポイント取得率</h3></header>
           <div class="bar-chart-group" id="at-first-sv-group"></div>
         </section>
         <section class="analysis-section">
-          <header class="section-header"><h3>セカンドサーブ時のポイント獲得率</h3></header>
+          <header class="section-header"><h3 data-i18n-key="header_win_rate_on_2nd_serve">セカンドサーブ時のポイント取得率</h3></header>
           <div class="bar-chart-group" id="at-second-sv-group"></div>
         </section>
         <section class="analysis-section">
-          <header class="section-header"><h3>ファーストリターン時のポイント獲得率</h3></header>
+          <header class="section-header"><h3 data-i18n-key="header_win_rate_on_1st_return">ファーストリターン時のポイント取得率</h3></header>
           <div class="bar-chart-group" id="at-first-return-group"></div>
         </section>
         <section class="analysis-section">
-          <header class="section-header"><h3>セカンドリターン時のポイント獲得率</h3></header>
+          <header class="section-header"><h3 data-i18n-key="header_win_rate_on_2nd_return">セカンドリターン時のポイント取得率</h3></header>
           <div class="bar-chart-group" id="at-second-return-group"></div>
         </section>
         <section class="analysis-section">
-          <header class="section-header"><h3>ゲーム取得率</h3></header>
+          <header class="section-header"><h3 data-i18n-key="header_game_win_rate">ゲーム取得率</h3></header>
           <div class="bar-chart-group" id="game-rate-group"></div>
         </section>
         
@@ -89,7 +97,11 @@
 
       <div id="advance-data" class="tab-panel">
         <section class="analysis-section">
-          <header class="section-header"><h3>ウィニングレート（ウィナー / ( ウィナー + ミス ))</h3></header>
+          <header class="section-header"><h3 data-i18n-key="header_one_point_match_rate">一本勝負時のポイント取得率</h3></header>
+          <div class="bar-chart-group" id="one-point-match-rate-group"></div>
+        </section>
+        <section class="analysis-section">
+          <header class="section-header"><h3 data-i18n-key="header_winning_rate">ウィニングレート（決めた / ( 決めた + ミス ))</h3></header>
           <div class="bar-chart-group" id="winning-rate-group"></div>
         </section>
         <div class="grid-container">
@@ -101,8 +113,12 @@
       </div>
 
       <div id="point-history" class="tab-panel">
-        <h2>全ポイント履歴</h2>
+        <h2 data-i18n-key="point_history_title">全ポイント履歴</h2>
         <div id="history-container"></div>
+      </div>
+
+      <div id="ai-analysis" class="tab-panel">
+        <!-- JSで内容が挿入されます -->
       </div>
     </main>
   </div>

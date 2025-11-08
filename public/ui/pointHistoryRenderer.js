@@ -1,4 +1,5 @@
-import { ALL_DATA, SELECTED_SET, normalizeTimestamp } from '../main.js';
+import { ALL_DATA, SELECTED_SET } from '../state.js';
+import { normalizeTimestamp } from '../main.js';
 import { translate } from '../i18n.js';
 
 function calculateInGameScoresAfterPoint(points, isTieBreak) {

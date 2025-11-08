@@ -1,3 +1,5 @@
+// public/firebase/data.js
+
 export async function fetchAllGameData(db, targetMatchId) {
     const matchRelatedCollections = ['matchData', 'setData', 'gameData', 'pointData', 'geminiData'];
     const matchPromises = matchRelatedCollections.map(async (colName) => {

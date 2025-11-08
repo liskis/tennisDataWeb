@@ -1,0 +1,85 @@
+/* public/css/pointHistory.css */
+.set-header {
+  background-color: #e9ecef;
+  padding: 10px 15px;
+  margin-top: 25px;
+  border-radius: 6px;
+  border-bottom: 2px solid var(--primary-color);
+}
+
+.set-header h3 {
+  margin: 0;
+  font-size: 1.3em;
+  color: #333;
+}
+
+.game-header {
+  padding: 8px 15px;
+  margin-top: 15px;
+  background-color: #f8f9fa;
+  border-left: 4px solid var(--secondary-color);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 15px;
+}
+
+.game-header h4 {
+  margin: 0;
+  font-weight: 600;
+  color: var(--text-color);
+}
+.game-header span {
+  font-size: 0.9em;
+  color: var(--subtle-text-color);
+}
+.game-result {
+  font-weight: 500;
+  color: var(--primary-color);
+}
+
+.point-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0;
+  box-shadow: none;
+  margin-bottom: 20px;
+  font-size: 0.9em;
+  table-layout: fixed;
+  word-break: break-word;
+}
+
+.point-history-table th,
+.point-history-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.point-history-table th {
+  background-color: #f7f7f7;
+  font-weight: 600;
+}
+
+.point-history-table tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+/* Column widths */
+.point-history-table th:nth-child(1), .point-history-table td:nth-child(1) { width: 12%; } /* Position */
+.point-history-table th:nth-child(2), .point-history-table td:nth-child(2) { width: 12%; text-align: center; } /* Point */
+.point-history-table th:nth-child(3), .point-history-table td:nth-child(3) { width: 10%; text-align: center; } /* Get/Lost */
+.point-history-table th:nth-child(4), .point-history-table td:nth-child(4) { width: 10%; text-align: center; } /* Service */
+.point-history-table th:nth-child(5), .point-history-table td:nth-child(5) { width: 10%; text-align: center; } /* Shot */
+.point-history-table th:nth-child(6), .point-history-table td:nth-child(6) { width: auto; } /* Whose */
+
+/* Get/Lost styles */
+.point-get {
+  color: var(--success-color);
+  font-weight: bold;
+}
+.point-lost {
+  color: var(--danger-color);
+  font-weight: bold;
+}

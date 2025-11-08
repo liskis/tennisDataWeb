@@ -1,4 +1,5 @@
-import { ALL_DATA, SELECTED_SET } from '../main.js';
+
+import { ALL_DATA, SELECTED_SET } from '../state.js';
 import { normalizeTimestamp } from '../main.js';
 
 export function calculateAllStats() {

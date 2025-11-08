@@ -1,4 +1,5 @@
-import { ALL_DATA } from '../main.js';
+
+import { ALL_DATA } from '../state.js';
 import { normalizeTimestamp } from '../main.js';
 import { translate } from '../i18n.js';
 

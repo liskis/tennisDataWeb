@@ -1,27 +1,12 @@
+// public/main.js
+
 import { fetchAllGameData } from './firebase/data.js';
-import { calculateAllStats } from './stats/calculator.js';
-// ▼▼▼ `updateLanguageSwitcherUI` をインポートに追加 ▼▼▼
-import { renderScoreArea, setupUIEventListeners, updateStaticText, updateLanguageSwitcherUI } from './ui/renderer.js';
-import { initI18n } from './i18n.js';
+import { ALL_DATA, recalculateStats } from './state.js';
+import { initI18n, translate, setLanguage, getLanguage } from './i18n.js';
+import { renderScoreArea, updateLanguageSwitcherUI } from './ui/scoreAreaRenderer.js';
+import { setupUIEventListeners } from './ui/eventListeners.js';
 
-// --- Global State ---
-export let ALL_DATA = {};
-export let CURRENT_STATS = {};
-export let SELECTED_SET = 0;
-export let PLAYER_NAMES = {
-  mySelf: 'You',
-  partner: 'Partner',
-  opponentTeam: 'Opponent'
-};
-
-export function updateSelectedSet(newSet) {
-  SELECTED_SET = newSet;
-}
-
-export function recalculateStats() {
-  CURRENT_STATS = calculateAllStats();
-}
-
+// --- Timestamp Utility ---
 export function normalizeTimestamp(timestampField) {
   if (!timestampField) return null;
   if (timestampField && typeof timestampField.toDate === 'function') {
@@ -40,7 +25,7 @@ const googleChartsPromise = new Promise(resolve => google.charts.setOnLoadCallba
 // --- Main Application Logic ---
 async function main() {
   initI18n(); 
-  updateStaticText(); 
+  updateStaticText();
 
   await googleChartsPromise;
   console.log("Google Charts ready.");
@@ -49,29 +34,39 @@ async function main() {
   const appContainer = document.getElementById('app-container');
 
   try {
-    const isLocal = location.hostname === "localhost" || location.hostname === "127.0.0.1";
-    
     const db = firebase.firestore();
     const auth = firebase.auth();
 
-    if (isLocal) {
-      console.log("Running in local environment.");
-    } else {
-      console.log("Running in production environment.");
+    // カスタムクレーム方式のセキュリティルールに合わせて、Webアプリでも匿名認証を行う
+    if (!auth.currentUser) {
       await auth.signInAnonymously();
-      console.log("Signed in anonymously.");
+      console.log("Web app signed in anonymously to read data.");
     }
     
     const url = new URL(window.location.href);
     const matchId = url.searchParams.get("matchId");
 
     if (matchId) {
-      ALL_DATA = await fetchAllGameData(db, matchId);
+      const fetchedData = await fetchAllGameData(db, matchId);
+      Object.assign(ALL_DATA, fetchedData);
       
+
+      // matchDataのinputModeが'beginner'の場合、アドバンスデータタブを非表示にする
+      if (ALL_DATA.matchData && ALL_DATA.matchData.length > 0) {
+        const matchInfo = ALL_DATA.matchData[0];
+        if (matchInfo.inputMode === 'beginner') {
+          const advanceTabButton = document.querySelector('button[data-tab="advance-data"]');
+          if (advanceTabButton) {
+            advanceTabButton.style.display = 'none';
+          }
+        }
+      }
+
       loadingIndicator.style.display = 'none';
       appContainer.style.display = 'block';
 
       setupUIEventListeners();
+      // 最初のタブをプログラム的にクリックして初期表示を行う
       document.querySelector('.tab-button.active').click();
     } else {
       loadingIndicator.setAttribute('data-i18n-key', 'no_match_id');
@@ -90,29 +85,54 @@ async function main() {
   }
 }
 
+// --- UI Update Helpers ---
+export function updateStaticText() {
+    document.querySelectorAll('[data-i18n-key]').forEach(el => {
+        const key = el.getAttribute('data-i18n-key');
+        const translatedText = translate(key);
+
+        // ▼▼▼ ここから変更 ▼▼▼
+        // 改行マーカー '|' が含まれているかチェック
+        if (translatedText.includes('|')) {
+            // マーカーをスマホ表示用の<br>タグに置換してinnerHTMLに設定
+            // /\|/g は、文字列中の全ての'|'を置換するための正規表現
+            el.innerHTML = translatedText.replace(/\|/g, '<br class="br-on-sp">');
+        } else {
+            // 含まれていない場合は従来通りtextContentに設定
+            el.textContent = translatedText;
+        }
+        // ▲▲▲ ここまで変更 ▲▲▲
+    });
+}
+
+
 // --- UI Update Trigger ---
 export async function updateAndRender() {
     updateStaticText();
-    updateLanguageSwitcherUI(); // ▼▼▼ ここでボタンUIの更新を呼び出す ▼▼▼
+    updateLanguageSwitcherUI();
     renderScoreArea();
     recalculateStats();
 
     const activeTab = document.querySelector('.tab-button.active');
     if (activeTab) {
         const activeTabId = activeTab.dataset.tab;
-        const rendererModule = await import('./ui/renderer.js');
+        
         switch (activeTabId) {
             case 'basic-data':
-                rendererModule.drawBasicCharts();
+                const { drawBasicCharts } = await import('./ui/chartRenderer.js');
+                drawBasicCharts();
                 break;
             case 'advance-data':
-                rendererModule.drawAdvanceCharts();
+                const { drawAdvanceCharts } = await import('./ui/chartRenderer.js');
+                drawAdvanceCharts();
                 break;
             case 'point-history':
-                rendererModule.renderPointHistory();
+                const { renderPointHistory } = await import('./ui/pointHistoryRenderer.js');
+                renderPointHistory();
                 break;
             case 'ai-analysis':
-                rendererModule.renderAiAnalysis();
+                const { renderAiAnalysis } = await import('./ui/aiAnalysisRenderer.js');
+                renderAiAnalysis();
                 break;
         }
     }

@@ -1,0 +1,33 @@
+/* public/css/base.css */
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #6c757d;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --info-color: #17a2b8;
+  
+  --my-color: #3366cc; /* blue */
+  --partner-color: #109618; /* green */
+  --opponent-color: #ff9900; /* orange */
+  --my-winner: #4285F4;
+  --par-winner: #34A853;
+  --opp-winner: #EA4335;
+  --my-miss: #FBBC05;
+  --par-miss: #F28B82;
+  --opp-miss: #A50E0E;
+
+  --background-color: #f0f2f5;
+  --surface-color: #ffffff;
+  --text-color: #1c1e21;
+  --subtle-text-color: #65676b;
+  --border-color: #dddfe2;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  margin: 0;
+  line-height: 1.5;
+}

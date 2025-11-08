@@ -1,0 +1,61 @@
+/* public/css/header.css */
+header#score-area {
+  background-color: #1c1e21;
+  color: white;
+  padding: 15px 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+#match-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9em;
+}
+
+#match-info p {
+    margin: 0;
+}
+
+#player-names {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 0 10px 0;
+  font-size: 1.2em;
+}
+
+.team-names {
+  flex: 1;
+}
+
+.team-names.my-team {
+  text-align: left;
+}
+
+.team-names.opponent-team {
+  text-align: right;
+}
+
+.team-names span {
+  font-weight: 600;
+}
+
+.vs-divider {
+  margin: 0 20px;
+  color: var(--subtle-text-color);
+  font-size: 0.9em;
+}
+
+#set-scores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+nav#tab-navigation {
+  background-color: var(--surface-color);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: center;
+}

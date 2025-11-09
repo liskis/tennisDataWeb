@@ -41,7 +41,7 @@
   }
 
   .legend-item {
-    font-size: 0.85em;
+    font-size: 0.8em;
   }
 
   .legend-description {
@@ -49,27 +49,35 @@
   }
   
   .point-history-table {
-    font-size: 0.85em; 
+    table-layout: fixed;
+    font-size: 0.8em;
     word-break: normal;
     overflow-wrap: break-word; 
   }
   
   .point-history-table th,
   .point-history-table td {
-    padding: 9px 5px;
+    padding: 8px 4px;
+    text-align: center;
+    vertical-align: middle;
   }
 
+  
   .point-history-table th {
-    white-space: nowrap; 
+    font-size: 11px;
+    white-space: nowrap;
   }
 
   /* Responsive column widths for point history */
-  .point-history-table th:nth-child(1), .point-history-table td:nth-child(1) { width: 18%; }
-  .point-history-table th:nth-child(2), .point-history-table td:nth-child(2) { width: 16%; }
-  .point-history-table th:nth-child(3), .point-history-table td:nth-child(3) { width: 12%; }
-  .point-history-table th:nth-child(4), .point-history-table td:nth-child(4) { width: 12%; }
-  .point-history-table th:nth-child(5), .point-history-table td:nth-child(5) { width: 10%; }
-  .point-history-table th:nth-child(6), .point-history-table td:nth-child(6) { width: 32%; }
+  .point-history-table th:nth-child(1), .point-history-table td:nth-child(1) { width: 22%; } /* ポジション */
+  .point-history-table th:nth-child(2), .point-history-table td:nth-child(2) { width: 14%; } /* ポイント */
+  .point-history-table th:nth-child(3), .point-history-table td:nth-child(3) { width: 15%; } /* GetLost */
+  .point-history-table th:nth-child(4), .point-history-table td:nth-child(4) { width: 15%; } /* サービス */
+  .point-history-table th:nth-child(5), .point-history-table td:nth-child(5) { width: 12%; } /* ショット */
+  .point-history-table th:nth-child(6), .point-history-table td:nth-child(6) { 
+    width: 22%; /* 誰が */
+    line-height: 1.4;
+  }
 }
 
 

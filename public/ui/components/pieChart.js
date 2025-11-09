@@ -64,9 +64,10 @@ export function drawPieChart(elementId, title, data, colors, options = {}) {
         
         listItem.innerHTML = `
             <span class="legend-marker" style="background-color: ${color};"></span>
-            <span class="legend-label">${label.replace(/\n/g, ' ')}</span>
+            <span class="legend-label">${label.replace(/\n/g, ' ').replace(/\|/g, '')}</span>
             <span class="legend-value">${valueText}</span>
         `;
+
         legendList.appendChild(listItem);
     });
     legendWrapper.appendChild(legendList);

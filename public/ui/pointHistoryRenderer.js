@@ -142,7 +142,14 @@ export function renderPointHistory() {
                     }
 
                     row.insertCell().textContent = '-';
-                    row.insertCell().textContent = getWhoseText(point);
+                    const whoseCell = row.insertCell();
+                    const whoseText = getWhoseText(point);
+                    // 改行マーカー'|'が含まれていたら、スマホ用の<br>タグに変換
+                    if (whoseText.includes('|')) {
+                        whoseCell.innerHTML = whoseText.replace(/\|/g, '<br class="br-on-sp">');
+                    } else {
+                        whoseCell.textContent = whoseText;
+                    }
                 });
             }
             table.appendChild(tbody);

@@ -141,6 +141,8 @@ const translations = {
     // General
     loading: "試合データを読み込み中...",
     no_match_id: "試合IDが指定されていません",
+    all_sets: "全て",
+    set_x: "第 {number} セット",
     // (Existing japanese translations...)
     tab_basic_data: "試合|データ",
     tab_advance_data: "アドバンス|データ",

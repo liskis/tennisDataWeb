@@ -80,8 +80,6 @@ export function renderScoreArea() {
     const translatedFormat = translate(match.matchFormat);
     const translatedType = translate(match.matchType);
     
-    // ▼▼▼ ここから変更 ▼▼▼
-    // textContentではなくinnerHTMLを使い、CSSで制御可能な構造にする
     const matchTypeContainer = document.getElementById('match-type');
     if (matchTypeContainer) {
         matchTypeContainer.innerHTML = `
@@ -90,13 +88,13 @@ export function renderScoreArea() {
             <span class="match-info-part">${translatedType}</span>
         `;
     }
-    // ▲▲▲ ここまで変更 ▲▲▲
     
     const setScoresContainer = document.getElementById('set-scores');
     setScoresContainer.innerHTML = '';
     const allSetBtn = document.createElement('button');
     allSetBtn.className = 'set-score-button' + (SELECTED_SET === 0 ? ' active' : '');
-    allSetBtn.textContent = translate('all_sets');
+    // ▼▼▼ この行を修正します ▼▼▼
+    allSetBtn.textContent = translate('all_sets'); // "All" を translate('all_sets') に変更
     allSetBtn.onclick = async () => { if (!allSetBtn.disabled) { updateSelectedSet(0); await updateAndRender(); } };
     setScoresContainer.appendChild(allSetBtn);
 
@@ -111,7 +109,8 @@ export function renderScoreArea() {
         const setBtn = document.createElement('button');
         const setNumber = index + 1;
         setBtn.className = 'set-score-button' + (SELECTED_SET === setNumber ? ' active' : '');
-        setBtn.textContent = `${translate('set_x', {number: setNumber})} (${set.getGameCount}-${set.lostGameCount})`;
+        // ▼▼▼ この行を修正します ▼▼▼
+        setBtn.textContent = `${translate('set_x', {number: setNumber})} (${set.getGameCount}-${set.lostGameCount})`; // "Set {number}" を translate('set_x', ...) に変更
         setBtn.onclick = async () => { if (!setBtn.disabled) { updateSelectedSet(setNumber); await updateAndRender(); } };
         setScoresContainer.appendChild(setBtn);
     });

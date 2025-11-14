@@ -6,6 +6,7 @@ import { translate } from '../i18n.js';
 import { createBarChartRow } from './components/barChart.js';
 import { drawPieChart } from './components/pieChart.js';
 import { openModal } from './modal.js';
+import { updateStaticText } from '../main.js';
 
 function setupExplanationButtons(containerId) {
     const container = document.getElementById(containerId);
@@ -44,7 +45,8 @@ function setupExplanationButtons(containerId) {
 
         const button = document.createElement('button');
         button.className = 'explanation-button';
-        button.textContent = translate('show_explanation_button');
+        button.setAttribute('data-i18n-key', 'show_explanation_button'); // data-i18n-key属性を設定
+        button.textContent = translate('show_explanation_button'); // 初期テキストも設定
         button.onclick = () => {
             openModal(titleEl.textContent, combinedExplanation);
         };
@@ -81,6 +83,7 @@ export function drawBasicCharts() {
     if (stats.pointRateByReturnSide) { const { adv, duce } = stats.pointRateByReturnSide; drawPieChart('point_rate_return_side_chart', translate('pie_point_rate_return_side'), [['Side', 'Rate'], [translate('pie_adv_side'), adv.rate, adv], [translate('pie_duce_side'), duce.rate, duce]], [colors.me, colors.info], { useFractionalLegend: true, description: translate('exp_point_rate_return_side') }); }
     if (stats.getAndLostGame) { const { get, lost, total } = stats.getAndLostGame; drawPieChart('get_lost_game_chart', `${translate('pie_get_lost_game')} (${total}G)`, [['Result', 'Games'], [translate('pie_get_game'), get], [translate('pie_lost_game'), lost]], [colors.success, colors.danger], { description: translate('exp_get_lost_game') }); }
     if (stats.breakAndServiceDown) { const { break: brk, serviceDown: sDown } = stats.breakAndServiceDown; drawPieChart('break_service_down_chart', translate('pie_break_service_down'), [['Type', 'Rate'], [translate('pie_break_rate'), brk.rate, brk], [translate('pie_service_down'), sDown.rate, sDown]], [colors.success, colors.danger], { useFractionalLegend: true, description: translate('exp_break_service_down') }); }
+    updateStaticText();
 }
 
 export function drawAdvanceCharts() {
@@ -116,4 +119,5 @@ export function drawAdvanceCharts() {
         if (stats.breakDownOfWinnerPoint) { const { myWinner, opponentWinner } = stats.breakDownOfWinnerPoint; drawPieChart('winner_point_breakdown_chart', translate('pie_winner_breakdown'), [['Type', 'Points'], [translate('pie_my_winner'), myWinner], [translate('pie_opponent_winner'), opponentWinner]], [colors.me, colors.opponent], { description: translate('exp_winner_breakdown_sgl') }); }
         if (stats.breakDownOfMissPoint) { const { myMiss, opponentMiss } = stats.breakDownOfMissPoint; drawPieChart('miss_point_breakdown_chart', translate('pie_miss_breakdown'), [['Type', 'Points'], [translate('pie_my_miss'), myMiss], [translate('pie_opponent_miss'), opponentMiss]], [colors.myMiss, colors.oppMiss], { description: translate('exp_miss_breakdown_sgl') }); }
     }
+    updateStaticText();
 }

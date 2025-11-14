@@ -1,5 +1,4 @@
 /* public/css/pointHistory.css */
-
 .set-header {
   background-color: #e9ecef;
   padding: 10px 15px;
@@ -84,3 +83,31 @@
   color: var(--danger-color);
   font-weight: bold;
 }
+
+/* --- ▼▼▼ ここから追加 ▼▼▼ --- */
+/* --- ポイント履歴「誰が」項目の色分け --- */
+.point-history-table .ph-my-winner {
+  color: var(--my-winner);
+  font-weight: bold;
+}
+.point-history-table .ph-partner-winner {
+  color: var(--par-winner);
+  font-weight: bold;
+}
+.point-history-table .ph-opponent-miss {
+  color: var(--opp-miss);
+  font-weight: bold;
+}
+.point-history-table .ph-my-miss {
+  color: var(--my-miss);
+  font-weight: bold;
+}
+.point-history-table .ph-partner-miss {
+  color: var(--par-miss);
+  font-weight: bold;
+}
+.point-history-table .ph-opponent-winner {
+  color: var(--opp-winner);
+  font-weight: bold;
+}
+/* --- ▲▲▲ 追加ここまで ▲▲▲ --- */

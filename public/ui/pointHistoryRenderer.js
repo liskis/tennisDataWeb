@@ -35,21 +35,43 @@ function calculateInGameScoresAfterPoint(points, isTieBreak) {
     });
 }
 
-function getWhoseText(point) {
+// ▼▼▼ この関数を修正します (getWhoseText -> getWhoseInfo) ▼▼▼
+function getWhoseInfo(point) {
     const whose = point.whose;
     const winner = point.whichPoint;
+    let textKey = '';
+    let className = '';
 
     if (winner === 'myTeam') {
-        if (whose === 'me') return translate('pie_my_winner');
-        if (whose === 'partner') return translate('pie_partner_winner');
-        if (['playerA', 'playerB', 'opponent'].includes(whose)) return translate('pie_opponent_miss');
-    } else {
-        if (whose === 'me') return translate('pie_my_miss');
-        if (whose === 'partner') return translate('pie_partner_miss');
-        if (['playerA', 'playerB', 'opponent'].includes(whose)) return translate('pie_opponent_winner');
+        if (whose === 'me') {
+            textKey = 'pie_my_winner';
+            className = 'ph-my-winner';
+        } else if (whose === 'partner') {
+            textKey = 'pie_partner_winner';
+            className = 'ph-partner-winner';
+        } else if (['playerA', 'playerB', 'opponent'].includes(whose)) {
+            textKey = 'pie_opponent_miss';
+            className = 'ph-opponent-miss';
+        }
+    } else { // winner === 'opponent'
+        if (whose === 'me') {
+            textKey = 'pie_my_miss';
+            className = 'ph-my-miss';
+        } else if (whose === 'partner') {
+            textKey = 'pie_partner_miss';
+            className = 'ph-partner-miss';
+        } else if (['playerA', 'playerB', 'opponent'].includes(whose)) {
+            textKey = 'pie_opponent_winner';
+            className = 'ph-opponent-winner';
+        }
     }
-    return '-';
+
+    if (textKey) {
+        return { text: translate(textKey), className: className };
+    }
+    return { text: '-', className: '' };
 }
+// ▲▲▲ 修正ここまで ▲▲▲
 
 export function renderPointHistory() {
     const container = document.getElementById('point-history');
@@ -124,9 +146,7 @@ export function renderPointHistory() {
                 
                 pointsInGame.forEach(point => {
                     const row = tbody.insertRow();
-                    // ▼▼▼ ここを修正 ▼▼▼
                     row.insertCell().textContent = translate(point.myPosition) || point.myPosition;
-                    // ▲▲▲ 修正ここまで ▲▲▲
                     row.insertCell().textContent = point.inGameScoreAfter || 'N/A';
                     
                     const getLostCell = row.insertCell();
@@ -144,14 +164,18 @@ export function renderPointHistory() {
                     }
 
                     row.insertCell().textContent = '-';
+
+                    // ▼▼▼ この部分を修正します ▼▼▼
                     const whoseCell = row.insertCell();
-                    const whoseText = getWhoseText(point);
-                    // 改行マーカー'|'が含まれていたら、スマホ用の<br>タグに変換
-                    if (whoseText.includes('|')) {
-                        whoseCell.innerHTML = whoseText.replace(/\|/g, '<br class="br-on-sp">');
+                    const whoseInfo = getWhoseInfo(point);
+                    whoseCell.className = whoseInfo.className; // CSSクラスをセルに適用
+
+                    if (whoseInfo.text.includes('|')) {
+                        whoseCell.innerHTML = whoseInfo.text.replace(/\|/g, '<br class="br-on-sp">');
                     } else {
-                        whoseCell.textContent = whoseText;
+                        whoseCell.textContent = whoseInfo.text;
                     }
+                    // ▲▲▲ 修正ここまで ▲▲▲
                 });
             }
             table.appendChild(tbody);

@@ -1,4 +1,5 @@
 /* public/css/responsive.css */
+
 @media screen and (max-width: 600px) {
 
   body {
@@ -28,24 +29,19 @@
     gap: 15px;
   }
   
-  .chart-box {
-    min-height: 320px;
-  }
-  
-  .custom-legend-wrapper {
-      top: 52%;
-  }
-  
+  /* ▼▼▼ responsive.css内の円グラフ関連のスタイルを削除します ▼▼▼ */
+  /* 
+    .chart-box, 
+    .custom-legend-wrapper, 
+    .legend-description 
+    に関する古い指定をすべて削除。
+    charts.cssのFlexboxレイアウトがレスポンシブに機能するため、
+    ここでの高さや位置の上書きは不要になります。
+  */
+  /* ▲▲▲ 削除ここまで ▲▲▲ */
+
   .legend-list {
     gap: 10px; 
-  }
-
-  .legend-item {
-    font-size: 0.8em;
-  }
-
-  .legend-description {
-    font-size: 0.75em;
   }
   
   .point-history-table {
@@ -69,13 +65,13 @@
   }
 
   /* Responsive column widths for point history */
-  .point-history-table th:nth-child(1), .point-history-table td:nth-child(1) { width: 22%; } /* ポジション */
-  .point-history-table th:nth-child(2), .point-history-table td:nth-child(2) { width: 14%; } /* ポイント */
-  .point-history-table th:nth-child(3), .point-history-table td:nth-child(3) { width: 15%; } /* GetLost */
-  .point-history-table th:nth-child(4), .point-history-table td:nth-child(4) { width: 15%; } /* サービス */
-  .point-history-table th:nth-child(5), .point-history-table td:nth-child(5) { width: 12%; } /* ショット */
+  .point-history-table th:nth-child(1), .point-history-table td:nth-child(1) { width: 22%; }
+  .point-history-table th:nth-child(2), .point-history-table td:nth-child(2) { width: 14%; }
+  .point-history-table th:nth-child(3), .point-history-table td:nth-child(3) { width: 15%; }
+  .point-history-table th:nth-child(4), .point-history-table td:nth-child(4) { width: 15%; }
+  .point-history-table th:nth-child(5), .point-history-table td:nth-child(5) { width: 12%; }
   .point-history-table th:nth-child(6), .point-history-table td:nth-child(6) { 
-    width: 22%; /* 誰が */
+    width: 22%;
     line-height: 1.4;
   }
 }
@@ -87,42 +83,38 @@
 
 @media (max-width: 768px) {
   .team-names .name-separator {
-    display: none; /* PC用の区切り文字'/'を非表示にします */
+    display: none;
   }
 
   .team-names .player-name {
-    display: block; /* プレイヤー名をブロック要素にして、縦に並ぶようにします */
-    line-height: 1.3; /* 行間を少し調整 */
+    display: block;
+    line-height: 1.3;
   }
 
-
-  /* --- 言語スイッチャー --- */
   #language-switcher {
     display: flex;
-    flex-direction: column; /* 縦並びに変更 */
-    align-items: center; /* 中央揃え */
-    gap: 2px; /* ボタン間の少しの隙間 */
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
   }
   
   #language-switcher .separator {
-    display: none; /* 区切り文字'/'を非表示に */
+    display: none;
   }
 
-  /* --- 試合情報 (ダブルス / セットマッチ) --- */
   #match-type .info-separator {
-    display: none; /* 区切り文字'/'を非表示に */
+    display: none;
   }
 
   #match-type .match-info-part {
-    display: block; /* ブロック要素にして縦に並べる */
+    display: block;
     line-height: 1.3;
   }
 
   .br-on-sp {
-    display: initial; /* brタグのデフォルトの表示(改行)に戻す */
+    display: initial;
   }
 
-  /* タブボタンのテキストが2行になるため、見た目を調整 */
   #tab-navigation .tab-button {
     line-height: 1.4;
     padding-top: 6px;

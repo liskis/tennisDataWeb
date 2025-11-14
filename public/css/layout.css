@@ -1,10 +1,19 @@
 /* public/css/layout.css */
+
 #loading-indicator {
   text-align: center;
   padding: 50px;
   font-size: 1.2em;
   color: var(--subtle-text-color);
 }
+
+/* ▼▼▼ このスタイルを追加します ▼▼▼ */
+#app-container {
+  max-width: 1200px; /* 最大幅を1200pxに設定 */
+  margin: 0 auto;    /* 画面が1200pxより広い場合に中央に配置 */
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* 任意: サイトの左右に影をつけて立体感を出す */
+}
+/* ▲▲▲ 追加ここまで ▲▲▲ */
 
 .sticky-header {
   position: -webkit-sticky; /* Safari */
@@ -53,13 +62,12 @@
   margin-top: 20px;
 }
 
+.grid-container .analysis-section.chart-box {
+    margin: 0; /* グリッド内のマージンをリセット */
+}
+
 .chart-box {
   position: relative; 
-  min-height: 350px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }
 
 .chart-box > div {

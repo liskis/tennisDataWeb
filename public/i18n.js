@@ -135,6 +135,7 @@ const translations = {
     exp_lost_point_breakdown_dbl: `If "OpponentsWinner" is more than "MyMiss"+"PartnersMiss", then the opponent is playing aggressive tennis. If "OpponentsWinner" is less than "MyMiss", then the opponent is playing defensive tennis.`,
     exp_winner_breakdown_dbl: `Even if "OpponentsWinner" are more than "MyWinner"+"PartnersWinner", you can still win if "OpponentsMiss" are more than "MyMiss"+"PartnersMiss". Please refer to the "Breakdown of MissPointsDoubles" for more information.`,
     exp_miss_breakdown_dbl: `Even if "MyMiss"+"PartnersMiss" is more than "OpponentsMiss", your team can still win if "MyWinner"+"PartnersWinner" is more than "OpponentsWinner". Please refer to the "Breakdown of WinnerPointsDoubles" for more information.`,
+    show_explanation_button: "Explanation",
   },
   ja: {
     // General
@@ -155,10 +156,10 @@ const translations = {
     header_first_serve_prob: "ファーストサーブの確率",
     header_second_serve_prob: "セカンドサーブの確率",
     header_double_fault_rate: "ダブルフォールトの確率",
-    header_win_rate_on_1st_serve: "ファーストサーブ時のポイント取得率",
-    header_win_rate_on_2nd_serve: "セカンドサーブ時のポイント取得率",
-    header_win_rate_on_1st_return: "ファーストリターン時のポイント取得率",
-    header_win_rate_on_2nd_return: "セカンドリターン時のポイント取得率",
+    header_win_rate_on_1st_serve: "ファーストサーブ時の|ポイント取得率",
+    header_win_rate_on_2nd_serve: "セカンドサーブ時の|ポイント取得率",
+    header_win_rate_on_1st_return: "ファーストリターン時の|ポイント取得率",
+    header_win_rate_on_2nd_return: "セカンドリターン時の|ポイント取得率",
     header_game_win_rate: "ゲーム取得率",
     // Bar Chart Labels
     label_keep_rate: "キープ率",
@@ -213,8 +214,8 @@ const translations = {
     pie_lost_point: "取られたポイント",
     pie_get_point_short: "取ったポイント",
     pie_lost_point_short: "取られたポイント",
-    pie_point_rate_sv_rtn: "サービスゲームとリターン\nゲームのポイント取得率",
-    pie_point_rate_sv_rtn_short: "サービスゲームとリターン\nゲームのポイント取得率",
+    pie_point_rate_sv_rtn: "サービスゲームとリターンゲームの\nポイント取得率",
+    pie_point_rate_sv_rtn_short: "サービスゲームとリターンゲームの\nポイント取得率",
     pie_service_game: "サービスゲーム",
     pie_return_game: "リターンゲーム",
     pie_point_rate_service_side: "サービスサイド別\nポイント取得率",
@@ -222,8 +223,8 @@ const translations = {
     pie_duce_side: "デュースサイド",
     pie_point_rate_return_side: "リターンサイド別\nポイント取得率",
     pie_get_lost_game: "取ったゲームと\n取れなかったゲーム",
-    pie_get_game: "Getゲーム",
-    pie_lost_game: "Lostゲーム",
+    pie_get_game: "取ったゲーム",
+    pie_lost_game: "取れなかったゲーム",
     pie_break_service_down: "ブレーク率と\nサービスダウン率",
     pie_break_rate: "ブレーク率",
     pie_service_down: "サービスダウン率",
@@ -265,6 +266,7 @@ const translations = {
     exp_lost_point_breakdown_dbl: `「自分がミス＋味方がミス」が「相手が決めた」より少ない場合は「相手が攻撃的なテニスをしている」ということになります。\n「自分がミス＋味方がミス」が「相手が決めた」より多い場合は、「相手が守備的なテニスをしている」ということになります。`,
     exp_winner_breakdown_dbl: `「自分が決めた＋味方が決めた」が「相手が決めた」より少なくても、ミスの数が相手よりも少なければ勝つことができます。\n「ミスしたポイントの内訳」も合わせて参考にしてください。`,
     exp_miss_breakdown_dbl: `「自分がミス＋味方がミス」が「相手がミス」より多くても、決めた数が多ければ勝つことができます。\n「決めたポイントの内訳」も合わせて参考にしてください。`,
+    show_explanation_button: "解説",
   }
 };
 

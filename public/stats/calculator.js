@@ -1,3 +1,4 @@
+// public/stats/calculator.js
 
 import { ALL_DATA, SELECTED_SET } from '../state.js';
 import { normalizeTimestamp } from '../main.js';

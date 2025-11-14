@@ -1,3 +1,5 @@
+// public/ui/pointHistoryRenderer.js
+
 import { ALL_DATA, SELECTED_SET } from '../state.js';
 import { normalizeTimestamp } from '../main.js';
 import { translate } from '../i18n.js';

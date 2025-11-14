@@ -1,0 +1,123 @@
+/* public/css/pieChart.css */
+
+/* 1. chart-boxに高さを設定 */
+.chart-box {
+  min-height: 320px; /* 解説非表示時のデフォルトの高さ */
+}
+
+/* 2. グラフ全体のコンテナ(タイトルとグラフ描画領域) */
+.pie-chart-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 250px;
+  width: 100%;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+/* タイトルを上から10px、左から10pxの位置に配置 */
+.chart-title {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+  text-align: left;
+  line-height: 1.3;
+  /* タイトルが2行になっても表示されるように改行を有効化 */
+  white-space: pre-line;
+}
+
+/* Google Chartsの描画領域 */
+.google-chart-div {
+  position: absolute;
+  top: 55px; /* 2行タイトルに対応するため少し下げる */
+  left: 0;
+  height: calc(100% - 55px); /* 親の高さからタイトルの高さを引く */
+  width: 100%;
+}
+
+
+/* 3. 凡例と解説ボタンをまとめるラッパー */
+.custom-legend-wrapper {
+  position: absolute;
+  top: 220px;
+  left: 0;
+  width: 100%;
+  padding: 0 10px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+/* デフォルトの凡例レイアウト (2要素以下の場合) */
+.legend-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px 0;
+  display: flex; 
+  justify-content: center;
+  gap: 15px; 
+  flex-wrap: wrap; 
+}
+
+/* 3要素の場合のカスタムグリッドレイアウト */
+.legend-list.legend-list-3-items {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2列グリッド */
+  grid-template-rows: auto auto;
+  gap: 8px 20px;
+  align-items: center;
+  min-height: 50px;
+  width: auto;
+  max-width: 320px;
+  margin: 0 auto 10px auto;
+  justify-items: center;
+}
+
+/* カスタム凡例でテキストが折り返さないように設定 */
+.legend-list.legend-list-3-items .legend-item {
+  white-space: nowrap;
+}
+
+.legend-list.legend-list-3-items .legend-item-top-center {
+  grid-column: 1 / 3; /* 全幅を使って中央配置 */
+  grid-row: 1;
+}
+
+.legend-list.legend-list-3-items .legend-item-bottom-left {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.legend-list.legend-list-3-items .legend-item-bottom-right {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  font-size: 0.9em !important;
+}
+
+.legend-item .legend-marker {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 5px; 
+  flex-shrink: 0;
+}
+
+.legend-item .legend-label {
+  color: var(--text-color);
+  margin-right: 5px; 
+}
+
+.legend-item .legend-value {
+  font-weight: 600;
+  color: var(--subtle-text-color);
+}

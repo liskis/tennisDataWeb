@@ -1,3 +1,4 @@
+// public/ui/aiAnalysisRenderer.js
 
 import { ALL_DATA } from '../state.js';
 import { normalizeTimestamp } from '../main.js';

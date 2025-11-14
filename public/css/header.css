@@ -1,4 +1,5 @@
 /* public/css/header.css */
+
 header#score-area {
   background-color: #1c1e21;
   color: white;
@@ -19,22 +20,26 @@ header#score-area {
 #player-names {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center; /* space-between から center に変更 */
   padding: 15px 0 10px 0;
   font-size: 1.2em;
 }
 
 .team-names {
-  flex: 1;
+  /* ▼▼▼ この部分のスタイルを変更します ▼▼▼ */
+  flex-basis: 45%; /* flex: 1 から変更し、最大幅を制限 */
+  max-width: 45%;
 }
 
 .team-names.my-team {
-  text-align: left;
+  text-align: right; /* left から right に変更 */
 }
 
 .team-names.opponent-team {
-  text-align: right;
+  text-align: left; /* right から left に変更 */
 }
+/* ▲▲▲ 修正ここまで ▲▲▲ */
+
 
 .team-names span {
   font-weight: 600;

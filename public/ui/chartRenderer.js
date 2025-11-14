@@ -5,6 +5,53 @@ import { getCssVariable } from './utils.js';
 import { translate } from '../i18n.js';
 import { createBarChartRow } from './components/barChart.js';
 import { drawPieChart } from './components/pieChart.js';
+import { openModal } from './modal.js';
+
+function setupExplanationButtons(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.querySelectorAll('.analysis-section').forEach(section => {
+        const header = section.querySelector('.section-header');
+        if (!header || header.querySelector('.explanation-button')) return;
+
+        const titleEl = header.querySelector('h3');
+        if (!titleEl) return;
+
+        const headerKey = titleEl.getAttribute('data-i18n-key');
+        if (!headerKey || !headerKey.startsWith('header_')) return;
+        
+        // ▼▼▼ この部分のロジックを再度修正します ▼▼▼
+        const explanationKeys = [];
+        // 特殊なケースをif-else ifで処理
+        if (headerKey === 'header_game_win_rate') {
+            explanationKeys.push('exp_game_win_rate_keep', 'exp_game_win_rate_break');
+        } else if (headerKey === 'header_one_point_match_rate') {
+            explanationKeys.push('exp_one_point_match_rate_serv', 'exp_one_point_match_rate_retn');
+        }
+        else { // 通常のケース
+            explanationKeys.push(headerKey.replace('header_', 'exp_'));
+        }
+
+        const explanationTexts = explanationKeys
+            .map(key => translate(key))
+            .filter(text => text && text.trim() !== "" && !text.startsWith('exp_'));
+
+        if (explanationTexts.length === 0) return;
+
+        const combinedExplanation = explanationTexts.join('\n\n<hr>\n\n'); // 区切り線をHRタグに変更
+        // ▲▲▲ 修正ここまで ▲▲▲
+
+        const button = document.createElement('button');
+        button.className = 'explanation-button';
+        button.textContent = translate('show_explanation_button');
+        button.onclick = () => {
+            openModal(titleEl.textContent, combinedExplanation);
+        };
+        header.appendChild(button);
+    });
+}
+
 
 export function drawBasicCharts() {
     const stats = CURRENT_STATS;
@@ -26,6 +73,8 @@ export function drawBasicCharts() {
     clearAndAppend('at-second-return-group', [stats.atSecondReturn && createBarChartRow(PLAYER_NAMES.mySelf, stats.atSecondReturn, colors.me), isDoubles && stats.atSecondReturnPartner && createBarChartRow(PLAYER_NAMES.partner, stats.atSecondReturnPartner, colors.partner)]);
     clearAndAppend('game-rate-group', [stats.keepRate && createBarChartRow(translate('label_keep_rate'), stats.keepRate, colors.success), stats.breakRate && createBarChartRow(translate('label_break_rate'), stats.breakRate, colors.danger)]);
     
+    setupExplanationButtons('basic-data');
+
     if (stats.getAndLostPoint) { const { get, lost, total } = stats.getAndLostPoint; drawPieChart('get_lost_point_chart', `${translate('pie_get_lost_point')} (${total})`, [['Result', 'Points'], [translate('pie_get_point'), get], [translate('pie_lost_point'), lost]], [colors.me, colors.opponent], { description: translate('exp_get_lost_point') }); }
     if (stats.pointRateBySvOrRtn) { const { service, return: ret } = stats.pointRateBySvOrRtn; drawPieChart('point_rate_sv_rtn_chart', translate('pie_point_rate_sv_rtn'), [['Type', 'Rate'], [translate('pie_service_game'), service.rate, service], [translate('pie_return_game'), ret.rate, ret]], [colors.me, colors.partner], { useFractionalLegend: true, description: translate('exp_point_rate_sv_rtn') }); }
     if (stats.pointRateByServiceSide) { const { adv, duce } = stats.pointRateByServiceSide; drawPieChart('point_rate_service_side_chart', translate('pie_point_rate_service_side'), [['Side', 'Rate'], [translate('pie_adv_side'), adv.rate, adv], [translate('pie_duce_side'), duce.rate, duce]], [colors.me, colors.info], { useFractionalLegend: true, description: translate('exp_point_rate_service_side') }); }
@@ -53,6 +102,8 @@ export function drawAdvanceCharts() {
         isDoubles && stats.partnersWinningRate && createBarChartRow(PLAYER_NAMES.partner, stats.partnersWinningRate, colors.partner),
         stats.opponentsWinningRate && createBarChartRow(PLAYER_NAMES.opponentTeam, stats.opponentsWinningRate, colors.opponent)
     ]);
+    
+    setupExplanationButtons('advance-data');
     
     if (isDoubles) {
         if (stats.breakDownOfGetPointDbls) { const { myWinner, partnerWinner, opponentMiss } = stats.breakDownOfGetPointDbls; drawPieChart('get_point_breakdown_chart', translate('pie_get_point_breakdown'), [['Type', 'Points'], [translate('pie_my_winner'), myWinner], [translate('pie_partner_winner'), partnerWinner], [translate('pie_opponent_miss'), opponentMiss]], [colors.me, colors.partner, colors.oppMiss], { description: translate('exp_get_point_breakdown_dbl') }); }

@@ -1,4 +1,5 @@
 <!-- public/index.html -->
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -12,7 +13,8 @@
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/header.css">
   <link rel="stylesheet" href="css/components.css">
-  <link rel="stylesheet" href="css/charts.css">
+  <link rel="stylesheet" href="css/barCharts.css">
+  <link rel="stylesheet" href="css/pieCharts.css">
   <link rel="stylesheet" href="css/pointHistory.css">
   <link rel="stylesheet" href="css/responsive.css">
 
@@ -53,47 +55,42 @@
         <section class="analysis-section">
           <header class="section-header"><h3 data-i18n-key="header_first_serve_prob">ファーストサーブの確率</h3></header>
           <div class="bar-chart-group" id="first-serve-group"></div>
-          <p class="chart-explanation" data-i18n-key="exp_first_serve_prob"></p>
         </section>
         <section class="analysis-section">
           <header class="section-header"><h3 data-i18n-key="header_second_serve_prob">セカンドサーブの確率</h3></header>
           <div class="bar-chart-group" id="second-serve-group"></div>
-          <p class="chart-explanation" data-i18n-key="exp_second_serve_prob"></p>
         </section>
         <section class="analysis-section">
           <header class="section-header"><h3 data-i18n-key="header_double_fault_rate">ダブルフォルト率</h3></header>
           <div class="bar-chart-group" id="double-fault-group"></div>
-          <p class="chart-explanation" data-i18n-key="exp_double_fault_rate"></p>
         </section>
         <section class="analysis-section">
-          <header class="section-header"><h3 data-i18n-key="header_win_rate_on_1st_serve">ファーストサーブ時のポイント取得率</h3></header>
+          <header class="section-header"><h3 data-i18n-key="header_win_rate_on_1st_serve">ファーストサーブ時の\nポイント取得率</h3></header>
           <div class="bar-chart-group" id="at-first-sv-group"></div>
-          <p class="chart-explanation" data-i18n-key="exp_win_rate_on_1st_serve"></p>
         </section>
         <section class="analysis-section">
           <header class="section-header"><h3 data-i18n-key="header_win_rate_on_2nd_serve">セカンドサーブ時のポイント取得率</h3></header>
           <div class="bar-chart-group" id="at-second-sv-group"></div>
-          <p class="chart-explanation" data-i18n-key="exp_win_rate_on_2nd_serve"></p>
         </section>
         <section class="analysis-section">
           <header class="section-header"><h3 data-i18n-key="header_win_rate_on_1st_return">ファーストリターン時のポイント取得率</h3></header>
           <div class="bar-chart-group" id="at-first-return-group"></div>
-          <p class="chart-explanation" data-i18n-key="exp_win_rate_on_1st_return"></p>
         </section>
         <section class="analysis-section">
           <header class="section-header"><h3 data-i18n-key="header_win_rate_on_2nd_return">セカンドリターン時のポイント取得率</h3></header>
           <div class="bar-chart-group" id="at-second-return-group"></div>
-          <p class="chart-explanation" data-i18n-key="exp_win_rate_on_2nd_return"></p>
         </section>
         <section class="analysis-section">
           <header class="section-header"><h3 data-i18n-key="header_game_win_rate">ゲーム取得率</h3></header>
           <div class="bar-chart-group" id="game-rate-group"></div>
-          <p class="chart-explanation" data-i18n-key="exp_game_win_rate_keep"></p>
-          <p class="chart-explanation" data-i18n-key="exp_game_win_rate_break"></p>
         </section>
         
         <div class="grid-container">
-          <section class="analysis-section chart-box"><div id="get_lost_point_chart"></div></section>
+          <section class="analysis-section chart-box">
+            <div id="get_lost_point_chart">
+
+            </div>
+          </section>
           <section class="analysis-section chart-box"><div id="point_rate_sv_rtn_chart"></div></section>
           <section class="analysis-section chart-box"><div id="point_rate_service_side_chart"></div></section>
           <section class="analysis-section chart-box"><div id="point_rate_return_side_chart"></div></section>
@@ -106,12 +103,10 @@
         <section class="analysis-section">
           <header class="section-header"><h3 data-i18n-key="header_one_point_match_rate">一本勝負時のポイント取得率</h3></header>
           <div class="bar-chart-group" id="one-point-match-rate-group"></div>
-          <p class="chart-explanation" data-i18n-key="exp_one_point_match_rate_serv"></p>
         </section>
         <section class="analysis-section">
           <header class="section-header"><h3 data-i18n-key="header_winning_rate">ウィニングレート（決めた / ( 決めた + ミス ))</h3></header>
           <div class="bar-chart-group" id="winning-rate-group"></div>
-          <p class="chart-explanation" data-i18n-key="exp_winning_rate"></p>
         </section>
         <div class="grid-container">
           <section class="analysis-section chart-box"><div id="get_point_breakdown_chart"></div></section>
@@ -131,7 +126,15 @@
       </div>
     </main>
   </div>
-  
+  <div id="modal-overlay" class="modal-overlay" style="display: none;">
+    <div id="modal-content" class="modal-content">
+      <header id="modal-header" class="modal-header">
+        <h4 id="modal-title"></h4>
+        <button id="modal-close" class="modal-close">&times;</button>
+      </header>
+      <div id="modal-body" class="modal-body"></div>
+    </div>
+  </div>
   <script type="module" src="main.js"></script>
 </body>
 </html>

@@ -1,4 +1,5 @@
 // public/state.js
+
 import { calculateAllStats } from './stats/calculator.js';
 
 // --- Global State ---

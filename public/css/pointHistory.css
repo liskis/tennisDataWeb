@@ -84,8 +84,6 @@
   font-weight: bold;
 }
 
-/* --- ▼▼▼ ここからが新規追加・修正箇所です ▼▼▼ --- */
-
 /* GetGame/LostGame の文字色 */
 .point-get-game {
   color: var(--primary-color); /* 青系の色 */
@@ -101,33 +99,35 @@
   line-height: 1.2; /* 行の高さを調整 */
 }
 
+/* --- ▼▼▼ Xcodeのスクリーンショットを元に色指定を修正 ▼▼▼ --- */
+
 /* --- ポイント履歴「誰が」項目の色分け --- */
 .point-history-table .ph-my-winner {
-  color: var(--my-winner);
+  color: #0465FF; /* myWinner */
   font-weight: bold;
 }
 .point-history-table .ph-partner-winner {
-  color: var(--par-winner);
+  color: #048BFF; /* parWinner */
   font-weight: bold;
 }
 .point-history-table .ph-opponent-miss {
-  color: var(--opp-miss);
+  color: #04A5FF; /* oppMiss */
   font-weight: bold;
 }
 .point-history-table .ph-my-miss {
-  color: var(--my-miss);
+  color: #FF4C00; /* myMiss */
   font-weight: bold;
 }
 .point-history-table .ph-partner-miss {
-  color: var(--par-miss);
+  color: #FF7200; /* parMiss */
   font-weight: bold;
 }
 .point-history-table .ph-opponent-winner {
-  color: var(--opp-winner);
+  color: #FF9800; /* oppWinner */
   font-weight: bold;
 }
 
-/* public/css/pointHistory.css の末尾に追加 */
+/* --- ▲▲▲ 修正ここまで ▲▲▲ --- */
 
 .game-count-footer {
   text-align: right;

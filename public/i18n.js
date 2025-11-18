@@ -11,10 +11,10 @@ const translations = {
     all_sets: "All",
     set_x: "Set {number}",
     // Tabs
-    tab_basic_data: "MatchData",
-    tab_advance_data: "AdvanceData",
-    tab_point_history: "PointHistory",
-    tab_ai_analysis: "AI-Analysis",
+    tab_basic_data: "Match|Data",
+    tab_advance_data: "Advance|Data",
+    tab_point_history: "Point|History",
+    tab_ai_analysis: "AI|Analysis",
     // Match Format & Type
     singles: "Singles",
     doubles: "Doubles",

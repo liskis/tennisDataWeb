@@ -76,7 +76,7 @@
 
 /* Get/Lost styles */
 .point-get {
-  color: var(--success-color);
+  color: var(--primary-color); /* 青系の色に変更 */
   font-weight: bold;
 }
 .point-lost {
@@ -84,7 +84,23 @@
   font-weight: bold;
 }
 
-/* --- ▼▼▼ ここから追加 ▼▼▼ --- */
+/* --- ▼▼▼ ここからが新規追加・修正箇所です ▼▼▼ --- */
+
+/* GetGame/LostGame の文字色 */
+.point-get-game {
+  color: var(--primary-color); /* 青系の色 */
+  font-weight: bold;
+  white-space: normal !important; /* 折り返しを強制 */
+  line-height: 1.2; /* 行の高さを調整 */
+}
+
+.point-lost-game {
+  color: var(--danger-color); /* 赤系の色 */
+  font-weight: bold;
+  white-space: normal !important; /* 折り返しを強制 */
+  line-height: 1.2; /* 行の高さを調整 */
+}
+
 /* --- ポイント履歴「誰が」項目の色分け --- */
 .point-history-table .ph-my-winner {
   color: var(--my-winner);
@@ -110,4 +126,14 @@
   color: var(--opp-winner);
   font-weight: bold;
 }
-/* --- ▲▲▲ 追加ここまで ▲▲▲ --- */
+
+/* public/css/pointHistory.css の末尾に追加 */
+
+.game-count-footer {
+  text-align: right;
+  font-weight: bold;
+  font-size: 1.1em;
+  padding: 8px 15px !important; /* !importantで他のスタイルを上書き */
+  background-color: #f8f9fa;
+  border-top: 2px solid #dee2e6;
+}

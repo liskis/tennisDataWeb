@@ -1,86 +1,16 @@
 /* public/css/responsive.css */
 
-@media screen and (max-width: 600px) {
-
-  body {
-    -webkit-text-size-adjust: 100%;
-  }
-  
-  .bar-chart-group .label {
-    width: 120px;
-    font-size: 0.85em;
-  }
-
-  .tab-button {
-    padding: 12px 15px;
-    font-size: 0.9em;
-  }
-
-  .analysis-section {
-    padding: 15px;
-  }
-
-  .section-header h3 {
-    font-size: 1.1em;
-  }
-
-  .grid-container {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-  
-  /* ▼▼▼ responsive.css内の円グラフ関連のスタイルを削除します ▼▼▼ */
-  /* 
-    .chart-box, 
-    .custom-legend-wrapper, 
-    .legend-description 
-    に関する古い指定をすべて削除。
-    charts.cssのFlexboxレイアウトがレスポンシブに機能するため、
-    ここでの高さや位置の上書きは不要になります。
-  */
-  /* ▲▲▲ 削除ここまで ▲▲▲ */
-
-  .legend-list {
-    gap: 10px; 
-  }
-  
-  .point-history-table {
-    table-layout: fixed;
-    font-size: 0.8em;
-    word-break: normal;
-    overflow-wrap: break-word; 
-  }
-  
-  .point-history-table th,
-  .point-history-table td {
-    padding: 8px 4px;
-    text-align: center;
-    vertical-align: middle;
-  }
-
-  
-  .point-history-table th {
-    font-size: 11px;
-    white-space: nowrap;
-  }
-
-  /* Responsive column widths for point history */
-  .point-history-table th:nth-child(1), .point-history-table td:nth-child(1) { width: 22%; }
-  .point-history-table th:nth-child(2), .point-history-table td:nth-child(2) { width: 14%; }
-  .point-history-table th:nth-child(3), .point-history-table td:nth-child(3) { width: 15%; }
-  .point-history-table th:nth-child(4), .point-history-table td:nth-child(4) { width: 15%; }
-  .point-history-table th:nth-child(5), .point-history-table td:nth-child(5) { width: 12%; }
-  .point-history-table th:nth-child(6), .point-history-table td:nth-child(6) { 
-    width: 22%;
-    line-height: 1.4;
-  }
-}
-
-
+/*
+  スマートフォン表示用の改行クラス
+  通常 (PC表示) では改行を無効化
+*/
 .br-on-sp {
   display: none;
 }
 
+/* =============================================== */
+/* ====== 画面幅 768px 以下 (タブレット等) ====== */
+/* =============================================== */
 @media (max-width: 768px) {
   .team-names .name-separator {
     display: none;
@@ -111,13 +41,86 @@
     line-height: 1.3;
   }
 
-  .br-on-sp {
-    display: initial;
-  }
-
   #tab-navigation .tab-button {
     line-height: 1.4;
     padding-top: 6px;
     padding-bottom: 6px;
+  }
+
+  /* スマートフォン表示用の改行を有効化 */
+  .br-on-sp {
+    display: block; /* initial から block に変更 */
+  }
+  
+  #match-date {
+    line-height: 1.3; /* 行の高さを調整して見やすくする */
+  }
+}
+
+
+/* =============================================== */
+/* ====== 画面幅 600px 以下 (スマートフォン) ====== */
+/* =============================================== */
+@media screen and (max-width: 600px) {
+
+  body {
+    -webkit-text-size-adjust: 100%;
+  }
+  
+  .bar-chart-group .label {
+    width: 120px;
+    font-size: 0.85em;
+  }
+
+  .tab-button {
+    padding: 12px 15px;
+    font-size: 0.9em;
+  }
+
+  .analysis-section {
+    padding: 15px;
+  }
+
+  .section-header h3 {
+    font-size: 1.1em;
+  }
+
+  .grid-container {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .legend-list {
+    gap: 10px; 
+  }
+  
+  .point-history-table {
+    table-layout: fixed;
+    font-size: 0.8em;
+    word-break: normal;
+    overflow-wrap: break-word; 
+  }
+  
+  .point-history-table th,
+  .point-history-table td {
+    padding: 8px 4px;
+    text-align: center;
+    vertical-align: middle;
+  }
+  
+  .point-history-table th {
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  /* Responsive column widths for point history */
+  .point-history-table th:nth-child(1), .point-history-table td:nth-child(1) { width: 22%; }
+  .point-history-table th:nth-child(2), .point-history-table td:nth-child(2) { width: 14%; }
+  .point-history-table th:nth-child(3), .point-history-table td:nth-child(3) { width: 15%; }
+  .point-history-table th:nth-child(4), .point-history-table td:nth-child(4) { width: 15%; }
+  .point-history-table th:nth-child(5), .point-history-table td:nth-child(5) { width: 12%; }
+  .point-history-table th:nth-child(6), .point-history-table td:nth-child(6) { 
+    width: 22%;
+    line-height: 1.4;
   }
 }

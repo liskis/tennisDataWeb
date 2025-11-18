@@ -1,5 +1,3 @@
-// public/ui/scoreAreaRenderer.js
-
 import { ALL_DATA, SELECTED_SET, PLAYER_NAMES, updateSelectedSet } from '../state.js';
 import { updateAndRender } from '../main.js';
 import { normalizeTimestamp } from '../main.js';
@@ -67,15 +65,24 @@ export function renderScoreArea() {
     }
 
     const startDate = normalizeTimestamp(match.matchStartDate);
+    const matchDateContainer = document.getElementById('match-date');
     
+    // ▼▼▼ 日付表示のロジックを修正 ▼▼▼
     if (!startDate) {
-        document.getElementById('match-date').textContent = 'Date unknown';
+        matchDateContainer.textContent = 'Date unknown';
     } else {
         const lang = getLanguage();
         const locale = lang === 'ja' ? 'ja-JP' : 'en-US';
-        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-        document.getElementById('match-date').textContent = startDate.toLocaleDateString(locale, options);
+
+        const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+        const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: false }; // 24時間表記に統一
+
+        const dateString = startDate.toLocaleDateString(locale, dateOptions);
+        const timeString = startDate.toLocaleTimeString(locale, timeOptions);
+        
+        matchDateContainer.innerHTML = `${dateString}<br class="br-on-sp">${timeString}`;
     }
+    // ▲▲▲ 修正ここまで ▲▲▲
     
     const translatedFormat = translate(match.matchFormat);
     const translatedType = translate(match.matchType);
@@ -93,8 +100,7 @@ export function renderScoreArea() {
     setScoresContainer.innerHTML = '';
     const allSetBtn = document.createElement('button');
     allSetBtn.className = 'set-score-button' + (SELECTED_SET === 0 ? ' active' : '');
-    // ▼▼▼ この行を修正します ▼▼▼
-    allSetBtn.textContent = translate('all_sets'); // "All" を translate('all_sets') に変更
+    allSetBtn.textContent = translate('all_sets');
     allSetBtn.onclick = async () => { if (!allSetBtn.disabled) { updateSelectedSet(0); await updateAndRender(); } };
     setScoresContainer.appendChild(allSetBtn);
 
@@ -109,8 +115,7 @@ export function renderScoreArea() {
         const setBtn = document.createElement('button');
         const setNumber = index + 1;
         setBtn.className = 'set-score-button' + (SELECTED_SET === setNumber ? ' active' : '');
-        // ▼▼▼ この行を修正します ▼▼▼
-        setBtn.textContent = `${translate('set_x', {number: setNumber})} (${set.getGameCount}-${set.lostGameCount})`; // "Set {number}" を translate('set_x', ...) に変更
+        setBtn.textContent = `${translate('set_x', {number: setNumber})} (${set.getGameCount}-${set.lostGameCount})`;
         setBtn.onclick = async () => { if (!setBtn.disabled) { updateSelectedSet(setNumber); await updateAndRender(); } };
         setScoresContainer.appendChild(setBtn);
     });

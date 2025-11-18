@@ -9,33 +9,49 @@ function calculateInGameScoresAfterPoint(points, isTieBreak) {
     let oppScore = 0;
     const scoreMap = { 0: '0', 1: '15', 2: '30', 3: '40' };
 
-    const getTennisScore = (s1, s2, servOrRet) => {
+    const getTennisScore = (myS, oppS) => {
         if (isTieBreak) {
-            return servOrRet === 'serviceGame' ? `${s1}-${s2}` : `${s2}-${s1}`;
+            return `${myS}-${oppS}`;
         }
-        if (s1 >= 3 && s2 >= 3) {
-            if (s1 === s2) return '40-40';
-            const advantagePlayer = s1 > s2 ? 'myTeam' : 'opponent';
-            if (servOrRet === 'serviceGame') {
-                return advantagePlayer === 'myTeam' ? 'Ad-40' : '40-Ad';
-            } else {
-                return advantagePlayer === 'myTeam' ? '40-Ad' : 'Ad-40';
-            }
+        if (myS >= 3 && oppS >= 3) {
+            if (myS === oppS) return '40-40';
+            if (myS > oppS) return 'Ad-40';
+            return '40-Ad';
         }
-        const score1 = scoreMap[s1] || '40';
-        const score2 = scoreMap[s2] || '40';
-        return servOrRet === 'serviceGame' ? `${score1}-${score2}` : `${score2}-${s1}`;
+        const myScoreText = scoreMap[myS] || '40';
+        const oppScoreText = scoreMap[oppS] || '40';
+        return `${myScoreText}-${oppScoreText}`;
     };
 
-    return points.map(point => {
+    return points.map((point, index) => {
+        const isLastPoint = index === points.length - 1;
+
         if (point.whichPoint === 'myTeam') myScore++;
         else oppScore++;
-        point.inGameScoreAfter = getTennisScore(myScore, oppScore, point.servOrRet);
+
+        if (isLastPoint) {
+            const gameWon = (isTieBreak && myScore >= 7 && myScore - oppScore >= 2) || 
+                            (!isTieBreak && myScore >= 4 && myScore - oppScore >= 2);
+            const gameLost = (isTieBreak && oppScore >= 7 && oppScore - myScore >= 2) || 
+                             (!isTieBreak && oppScore >= 4 && oppScore - myScore >= 2);
+
+            if (gameWon) {
+                point.inGameScoreAfter = translate('ph_get_game_long');
+                point.isGameEnd = 'get';
+            } else if (gameLost) {
+                point.inGameScoreAfter = translate('ph_lost_game_long');
+                point.isGameEnd = 'lost';
+            } else {
+                point.inGameScoreAfter = getTennisScore(myScore, oppScore);
+            }
+        } else {
+             point.inGameScoreAfter = getTennisScore(myScore, oppScore);
+        }
+
         return point;
     });
 }
 
-// ▼▼▼ この関数を修正します (getWhoseText -> getWhoseInfo) ▼▼▼
 function getWhoseInfo(point) {
     const whose = point.whose;
     const winner = point.whichPoint;
@@ -71,9 +87,9 @@ function getWhoseInfo(point) {
     }
     return { text: '-', className: '' };
 }
-// ▲▲▲ 修正ここまで ▲▲▲
 
 export function renderPointHistory() {
+    // ... (renderPointHistory 関数の前半は変更なし) ...
     const container = document.getElementById('point-history');
     if (!container) return;
 
@@ -114,7 +130,16 @@ export function renderPointHistory() {
 
         const gamesInSet = sortedGames.filter(g => g.setId === set.setId);
 
+        let myGameCountInSet = 0;
+        let oppGameCountInSet = 0;
+
         gamesInSet.forEach((game, gameIndex) => {
+            if (game.getPoint > game.lostPoint) {
+                myGameCountInSet++;
+            } else {
+                oppGameCountInSet++;
+            }
+            
             const gameTypeKey = game.isTieBreak ? 'ph_tie_break' : (game.servOrRet === 'serviceGame' ? 'label_service_game' : 'label_return_game');
             const resultKey = game.getPoint > game.lostPoint
                 ? (game.servOrRet === 'serviceGame' ? 'ph_keep' : 'ph_break')
@@ -147,7 +172,18 @@ export function renderPointHistory() {
                 pointsInGame.forEach(point => {
                     const row = tbody.insertRow();
                     row.insertCell().textContent = translate(point.myPosition) || point.myPosition;
-                    row.insertCell().textContent = point.inGameScoreAfter || 'N/A';
+                    
+                    const scoreCell = row.insertCell();
+                    // --- ▼▼▼ ここを修正 ('|' を <br> に置換) ▼▼▼
+                    const scoreText = (point.inGameScoreAfter || 'N/A').toString();
+                    scoreCell.innerHTML = scoreText.replace(/\|/g, '<br class="br-on-sp">');
+                    // --- ▲▲▲ 修正ここまで ▲▲▲
+
+                    if (point.isGameEnd === 'get') {
+                        scoreCell.classList.add('point-get-game');
+                    } else if (point.isGameEnd === 'lost') {
+                        scoreCell.classList.add('point-lost-game');
+                    }
                     
                     const getLostCell = row.insertCell();
                     const getLostText = point.whichPoint === 'myTeam' ? translate('ph_get') : translate('ph_lost');
@@ -165,20 +201,28 @@ export function renderPointHistory() {
 
                     row.insertCell().textContent = '-';
 
-                    // ▼▼▼ この部分を修正します ▼▼▼
                     const whoseCell = row.insertCell();
                     const whoseInfo = getWhoseInfo(point);
-                    whoseCell.className = whoseInfo.className; // CSSクラスをセルに適用
+                    whoseCell.className = whoseInfo.className;
 
+                    // 'whose' のテキストも '|' を含んでいる可能性があるので、同様に置換処理を適用
                     if (whoseInfo.text.includes('|')) {
                         whoseCell.innerHTML = whoseInfo.text.replace(/\|/g, '<br class="br-on-sp">');
                     } else {
                         whoseCell.textContent = whoseInfo.text;
                     }
-                    // ▲▲▲ 修正ここまで ▲▲▲
                 });
             }
             table.appendChild(tbody);
+
+            const tfoot = document.createElement('tfoot');
+            const footerRow = tfoot.insertRow();
+            const footerCell = footerRow.insertCell();
+            footerCell.colSpan = 6;
+            footerCell.className = 'game-count-footer';
+            footerCell.textContent = `${myGameCountInSet} - ${oppGameCountInSet}`;
+            table.appendChild(tfoot);
+
             historyContainer.appendChild(table);
         });
     });

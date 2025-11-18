@@ -7,7 +7,7 @@ import { translate } from '../i18n.js';
 function calculateInGameScoresAfterPoint(points, isTieBreak) {
     let myScore = 0;
     let oppScore = 0;
-    const scoreMap = { 0: '0', 1: '15', 2: '30', 3: '40' };
+    const scoreMap = { 0: '00', 1: '15', 2: '30', 3: '40' };
 
     const getTennisScore = (myS, oppS) => {
         if (isTieBreak) {

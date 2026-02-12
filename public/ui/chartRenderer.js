@@ -59,7 +59,7 @@ export function drawBasicCharts() {
     const stats = CURRENT_STATS;
     const container = document.getElementById('basic-data');
     if (!stats || Object.keys(stats).length === 0) {
-        container.innerHTML = `<h2>${translate('tab_basic_data')}</h2><p>${translate('no_data_to_display')}</p>`;
+        container.innerHTML = `<h2>${translate('basic_data_title')}</h2><p>${translate('no_data_to_display')}</p>`;
         return;
     }
     const isDoubles = ALL_DATA.matchData[0]?.matchFormat === 'doubles';
@@ -89,7 +89,7 @@ export function drawBasicCharts() {
 export function drawAdvanceCharts() {
     const stats = CURRENT_STATS;
     const container = document.getElementById('advance-data');
-    if (!stats || Object.keys(stats).length === 0) { container.innerHTML = `<h2>${translate('tab_advance_data')}</h2><p>${translate('no_data_to_display')}</p>`; return; }
+    if (!stats || Object.keys(stats).length === 0) { container.innerHTML = `<h2>${translate('advance_data_title')}</h2><p>${translate('no_data_to_display')}</p>`; return; }
     const isDoubles = ALL_DATA.matchData[0]?.matchFormat === 'doubles';
     
     const colors = { me: getCssVariable('--my-winner'), partner: getCssVariable('--par-winner'), opponent: getCssVariable('--opp-winner'), myMiss: getCssVariable('--my-miss'), parMiss: getCssVariable('--par-miss'), oppMiss: getCssVariable('--opp-miss'), success: getCssVariable('--success-color'), danger: getCssVariable('--danger-color') };

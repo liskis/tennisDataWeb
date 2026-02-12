@@ -13,6 +13,8 @@ const translations = {
     // Tabs
     tab_basic_data: "Match|Data",
     tab_advance_data: "Advance|Data",
+    basic_data_title: "MatchData",
+    advance_data_title: "AdvanceData",
     tab_point_history: "Point|History",
     tab_ai_analysis: "AI|Analysis",
     // Match Format & Type
@@ -150,6 +152,8 @@ const translations = {
     // (Existing japanese translations...)
     tab_basic_data: "試合|データ",
     tab_advance_data: "アドバンス|データ",
+    basic_data_title: "試合データ",
+    advance_data_title: "アドバンスデータ",
     tab_point_history: "ポイント|履歴",
     tab_ai_analysis: "AIで|分析",
     // Match Format & Type
